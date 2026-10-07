@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#faf9f6">
+    <title>Staff sign in — Luma Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=18">
+    <link rel="stylesheet" href="/admin.css?v=6">
+    <script src="/admin.js?v=3" defer></script>
+  </head>
+  <body class="admin-body">
+    <a class="skip-link" href="#admin-main">Skip to content</a>
+    <header class="admin-header">
+      <a class="wordmark" href="/" aria-label="Luma Hair Studio website"><span class="wordmark-name">luma<span>.</span></span><small>HAIR STUDIO</small></a>
+      <a class="button button-outline button-small" href="/">Back to the studio</a>
+    </header>
+    <main class="admin-main" id="admin-main" tabindex="-1">
+      <section class="admin-card">
+        <div class="admin-intro"><span class="eyebrow">THE BEHIND-THE-CHAIRS VIEW</span><h1>Welcome <em>back.</em></h1><p>Sign in to see the day and take care of your guests.</p></div>
+        <aside class="admin-setup-note">
+          <strong>First time here? Create your admin key.</strong>
+          <p>Open PowerShell in the project folder, generate a private key, set it for the server, then restart the server:</p>
+          <code>node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</code>
+          <code>$env:SALON_ADMIN_KEY = "paste-your-generated-key-here"</code>
+          <code>npm start</code>
+          <p>Keep the generated key private. It is not pre-created or recoverable from the website.</p>
+        </aside>
+        <form id="admin-login">
+          <label class="booking-label" for="admin-key">SALON ADMIN KEY</label>
+          <input class="booking-input" id="admin-key" type="password" autocomplete="current-password" required placeholder="Enter your salon admin key">
+          <button class="button button-dark" type="submit">Open the calendar</button>
+          <p class="form-error" id="admin-error" role="alert"></p>
+        </form>
+      </section>
+      <section class="admin-dashboard" id="admin-dashboard" hidden>
+        <div class="dashboard-heading"><div><span class="eyebrow">YOUR SALON, AT A GLANCE</span><h1>A little <em>overview.</em></h1></div><button class="button button-outline-light button-small" id="admin-signout" type="button">Sign out</button></div>
+        <div class="dashboard-stats" id="dashboard-stats"></div>
+        <div class="dashboard-list-heading"><h2>Appointments</h2><button class="button button-outline button-small" id="refresh-bookings" type="button">Refresh</button></div>
+        <div class="appointment-list" id="appointment-list" aria-live="polite"></div>
+      </section>
+      <div class="toast" id="admin-toast" role="status" aria-live="polite"></div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "luma-salon-booking",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A salon website and appointment booking system",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
