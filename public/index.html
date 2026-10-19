@@ -1,25 +1,87 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="daylight">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#faf9f6">
-    <meta name="description" content="Thoughtful cuts and dimensional colour in Brooklyn. Find your person at Luma Studio.">
-    <title>Luma Studio — Hair, with feeling</title>
+    <meta name="description" content="Thoughtful cuts, dimensional lived-in balayage, and restorative hair rituals in Williamsburg, Brooklyn. Book your 1-on-1 appointment at Luma Studio.">
+    <title>Luma Studio — Hair, with feeling · Williamsburg, Brooklyn</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="business.business">
+    <meta property="og:title" content="Luma Studio — Hair, with feeling · Williamsburg, Brooklyn">
+    <meta property="og:description" content="Thoughtful cuts, dimensional lived-in balayage, and restorative hair rituals in Brooklyn. Book online with real-time availability.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=85">
+    <meta property="og:url" content="https://lumastudio.example/">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Luma Studio — Hair, with feeling">
+    <meta name="twitter:description" content="Thoughtful cuts and dimensional colour in Williamsburg, Brooklyn.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=85">
+
+    <!-- Schema.org JSON-LD Structured Data for Google Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HairSalon",
+      "name": "Luma Studio",
+      "image": "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=85",
+      "telephone": "(718) 555-0142",
+      "email": "hello@lumastudio.example",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "214 Bedford Avenue",
+        "addressLocality": "Brooklyn",
+        "addressRegion": "NY",
+        "postalCode": "11211",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 40.7176,
+        "longitude": -73.9575
+      },
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday"], "opens": "10:00", "closes": "19:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Thursday", "Friday"], "opens": "10:00", "closes": "20:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday"], "opens": "09:00", "closes": "18:00" }
+      ],
+      "priceRange": "$$",
+      "currenciesAccepted": "USD",
+      "paymentAccepted": "Cash, Credit Card"
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://images.unsplash.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20">
-    <script src="/app.js?v=9" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=20261019_deluxe">
+    <script src="/three.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" defer></script>
+    <script src="/app.js?v=20261019_deluxe" defer></script>
   </head>
   <body>
+    <div class="scroll-progress-bar" id="scroll-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <a class="wordmark" href="#home" aria-label="Luma Hair Studio, back to top"><span class="wordmark-name">luma<span>.</span></span><small>HAIR STUDIO</small></a>
-      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
+      <div class="header-right-group">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle salon evening candlelight ambiance" title="Toggle salon evening ambiance">
+          <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+          <span class="theme-toggle-text">Evening Glow</span>
+        </button>
+        <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
+      </div>
       <nav class="main-nav" id="main-nav" aria-label="Main navigation">
-        <a href="#services">Services</a><a href="#team">Our people</a><a href="#studio">The studio</a><a href="#visit">Find us</a>
+        <a href="#services">Services</a>
+        <a href="#quiz">Hair Quiz</a>
+        <a href="#team">Our people</a>
+        <a href="#studio">The studio</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#faq">FAQ</a>
+        <a href="#visit">Find us</a>
         <a class="button button-outline button-small nav-admin" href="/admin">Staff sign in</a>
         <button class="button button-dark button-small nav-book" type="button" data-book>Book a visit</button>
       </nav>
@@ -33,28 +95,203 @@
           <div class="hero-actions"><button class="button button-dark" type="button" data-book>Book your appointment</button><a class="button button-outline" href="#services">Explore our services</a></div>
           <div class="hero-note"><div class="avatar-stack" aria-hidden="true"><span>M</span><span>J</span><span>I</span></div><p><strong>A good hair day, on repeat.</strong><br>Thoughtful work by people who care.</p></div>
         </div>
-        <div class="hero-visual">
-          <div class="hero-image-grid" role="group" aria-label="A glimpse inside the salon">
-            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=85" alt="Stylist creating a beautiful finish in a sunlit salon" fetchpriority="high">
-            <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=85" alt="Warm, welcoming salon interior" fetchpriority="high">
-            <img src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=85" alt="Long, healthy hair styled with a natural finish">
-            <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=85" alt="Professional stylist working with a salon client">
+        <div class="hero-visual" id="hero-stage">
+          <div class="hero-stage-nav" aria-label="Interactive 3D Salon Chair">
+            <div class="stage-nav-pill">
+              <span class="tab-3d-glyph" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              </span>
+              <span>3D Salon Chair</span>
+            </div>
+            <div class="hero-tone-selector" role="group" aria-label="Chair soft pastel finishes">
+              <button class="tone-pill active" type="button" data-tone="champagne" data-finish="champagne" aria-label="Cream Finish" title="Cream"><span class="tone-swatch champagne"></span>Cream</button>
+              <button class="tone-pill" type="button" data-tone="rosewood" data-finish="rosewood" aria-label="Blush Finish" title="Blush"><span class="tone-swatch rosewood"></span>Blush</button>
+              <button class="tone-pill" type="button" data-tone="sage" data-finish="sage" aria-label="Sage Finish" title="Sage"><span class="tone-swatch sage"></span>Sage</button>
+            </div>
+          </div>
+
+          <div class="hero-stage-viewport">
+            <!-- 3D WebGL Canvas Stage -->
+            <div class="hero-3d-stage active" id="stage-3d" aria-label="Interactive 3D Salon Showcase">
+              <div class="stage-3d-hint" id="stage-3d-hint"><span>✦ Drag in 360° to inspect</span></div>
+              <canvas id="hero-3d-canvas" class="hero-3d-canvas" aria-label="Interactive 3D model of luxury salon styling chair with plush upholstery and champagne gold finish"></canvas>
+              <div class="stage-3d-badge" aria-hidden="true">
+                <span class="badge-dot"></span>
+                <span>Luma Studio · 3D Chair Customizer</span>
+              </div>
+              <div class="stage-3d-controls" aria-label="3D interaction controls">
+                <button type="button" class="stage-control-btn" id="btn-reset-3d" aria-label="Reset 3D orientation" title="Reset View">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+                </button>
+                <button type="button" class="stage-control-btn active" id="btn-spin-3d" aria-label="Toggle auto spin" title="Auto Rotate">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-      <section class="ticker" aria-label="Studio values"><div><span>THOUGHTFUL COLOUR</span><i aria-hidden="true">✳</i><span>MODERN CUTS</span><i aria-hidden="true">✳</i><span>GOOD HAIR, GOOD ENERGY</span><i aria-hidden="true">✳</i><span>MADE FOR YOU</span></div></section>
+      <section class="ticker" aria-label="Studio values">
+        <div class="ticker-track">
+          <span>THOUGHTFUL COLOUR</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>MODERN CUTS</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>GOOD HAIR, GOOD ENERGY</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>BOTANICAL CARE</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>MADE FOR YOU</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>THOUGHTFUL COLOUR</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>MODERN CUTS</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>GOOD HAIR, GOOD ENERGY</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>BOTANICAL CARE</span><i aria-hidden="true" class="three-d-asterisk">✳</i>
+          <span>MADE FOR YOU</span>
+        </div>
+      </section>
       <section class="intro" aria-labelledby="intro-label">
         <span class="eyebrow" id="intro-label">A LITTLE ABOUT US</span>
         <p class="intro-copy">A neighborhood salon with a <em>softer touch.</em> We do thoughtful colour, cuts that grow out beautifully, and the kind of appointment that feels like an exhale.</p>
-        <a class="button button-outline" href="#studio">Get to know us</a>
+        <div class="intro-pillars">
+          <div class="pillar-card" data-3d-card="true">
+            <span class="pillar-number">01</span>
+            <h4>Unhurried 1-on-1 Sessions</h4>
+            <p>Dedicated chair time with no double-booking, so you and your stylist can focus entirely on your hair goals.</p>
+          </div>
+          <div class="pillar-card" data-3d-card="true">
+            <span class="pillar-number">02</span>
+            <h4>Dimensional Custom Colour</h4>
+            <p>Hand-painted, lived-in tones tailored to complement your skin tone, texture, and natural growth pattern.</p>
+          </div>
+          <div class="pillar-card" data-3d-card="true">
+            <span class="pillar-number">03</span>
+            <h4>Restorative Bond Science</h4>
+            <p>Every colour service and treatment preserves strand elasticity, cuticle integrity, and long-lasting gloss.</p>
+          </div>
+        </div>
+        <div class="intro-action">
+          <a class="button button-outline" href="#studio">Get to know our space</a>
+          <a class="button button-dark" href="#quiz">✦ Take 30-sec hair quiz</a>
+        </div>
       </section>
+
+      <!-- Interactive Hair Persona & Service Matcher Quiz -->
+      <section class="quiz-section" id="quiz" aria-labelledby="quiz-heading">
+        <div class="quiz-card" data-3d-card="true">
+          <div class="quiz-badge">
+            <span class="quiz-badge-sparkle">✦</span>
+            <span>30-SECOND HAIR CONSULTATION</span>
+          </div>
+          <div class="quiz-header">
+            <h2 id="quiz-heading">Not sure what your hair needs?<br><em>Let’s match you.</em></h2>
+            <p>Answer three quick questions about your hair history and goals to discover your ideal service and stylist.</p>
+          </div>
+
+          <div class="quiz-body" id="quiz-body">
+            <!-- Step 1 -->
+            <div class="quiz-step active" data-step="1">
+              <span class="step-indicator">Question 1 of 3 · Current Hair State</span>
+              <h3>What describes your hair right now?</h3>
+              <div class="quiz-options-grid">
+                <button type="button" class="quiz-option" data-answer="virgin">
+                  <strong>Natural / Virgin Hair</strong>
+                  <span>Untreated or natural growth, ready for a subtle or fresh change.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="colored">
+                  <strong>Highlighted or Coloured</strong>
+                  <span>Existing colour or grown-out highlights needing dimension or root blend.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="textured">
+                  <strong>Curly, Wavy or Textured</strong>
+                  <span>Needs moisture retention, sculpted shape, and curl-friendly care.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="damaged">
+                  <strong>Dry, Bleached or Damaged</strong>
+                  <span>Needs cuticle repair, bond rebuilding, and deep restorative nourishment.</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="quiz-step" data-step="2">
+              <span class="step-indicator">Question 2 of 3 · Your Hair Goal</span>
+              <h3>What is your dream outcome today?</h3>
+              <div class="quiz-options-grid">
+                <button type="button" class="quiz-option" data-answer="balayage">
+                  <strong>Sun-Kissed Dimensional Glow</strong>
+                  <span>Hand-painted balayage that grows out seamlessly with zero harsh lines.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="cut">
+                  <strong>Fresh Modern Cut &amp; Silhouette</strong>
+                  <span>A tailored cut with movement, face-framing layers, and lived-in blowout.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="roots">
+                  <strong>Root Refresh &amp; Nourishing Gloss</strong>
+                  <span>100% seamless regrowth coverage with a high-shine tonal glaze.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="repair">
+                  <strong>Deep Bond Repair &amp; Softness</strong>
+                  <span>Restoring internal strand strength, cuticle shine, and elasticity.</span>
+                </button>
+              </div>
+              <div class="quiz-step-actions">
+                <button type="button" class="quiz-back-btn">← Previous question</button>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="quiz-step" data-step="3">
+              <span class="step-indicator">Question 3 of 3 · Maintenance Rhythm</span>
+              <h3>How often do you like visiting the salon?</h3>
+              <div class="quiz-options-grid">
+                <button type="button" class="quiz-option" data-answer="low">
+                  <strong>Low Maintenance (2-3 times/year)</strong>
+                  <span>I want hair that looks intentional and gorgeous even as it grows out.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="medium">
+                  <strong>Regular Rhythm (Every 6-8 weeks)</strong>
+                  <span>I love keeping my lines crisp, roots neat, and treatments refreshed.</span>
+                </button>
+                <button type="button" class="quiz-option" data-answer="rituals">
+                  <strong>Whenever my strands need love</strong>
+                  <span>Flexible visits focused on nourishing care rituals and styling resets.</span>
+                </button>
+              </div>
+              <div class="quiz-step-actions">
+                <button type="button" class="quiz-back-btn">← Previous question</button>
+              </div>
+            </div>
+
+            <!-- Result Step -->
+            <div class="quiz-step quiz-result-step" data-step="result">
+              <div class="result-badge">YOUR CUSTOM MATCH</div>
+              <h3 id="quiz-result-title">Dimensional Balayage &amp; Consultation</h3>
+              <p id="quiz-result-desc">Based on your goals, our hand-painted balayage paired with a complimentary consultation is your perfect match.</p>
+              <div class="result-stylist-card" id="quiz-result-stylist">
+                <!-- Injected dynamically via JS -->
+              </div>
+              <div class="result-actions">
+                <button type="button" class="button button-dark" id="quiz-book-result">Book This Matched Service</button>
+                <button type="button" class="button button-outline" id="quiz-restart-btn">Retake quiz</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="services-section" id="services">
         <div class="section-heading">
-          <div><span class="eyebrow">OUR SERVICES & PRICING</span><h2>Good hair<br>starts <em>here.</em></h2></div>
+          <div><span class="eyebrow">OUR SERVICES &amp; PRICING</span><h2>Good hair<br>starts <em>here.</em></h2></div>
           <p>Personalized services, unhurried appointments, and clear pricing. Looking for your first colour appointment? Start with a complimentary consultation.</p>
         </div>
+        <div class="services-filter-bar" role="tablist" aria-label="Filter salon services">
+          <button class="service-filter-btn active" type="button" role="tab" aria-selected="true" data-filter="all">All Services</button>
+          <button class="service-filter-btn" type="button" role="tab" aria-selected="false" data-filter="Cuts & styling">Cuts &amp; Styling</button>
+          <button class="service-filter-btn" type="button" role="tab" aria-selected="false" data-filter="Colour">Dimensional Colour</button>
+          <button class="service-filter-btn" type="button" role="tab" aria-selected="false" data-filter="Rituals">Care Rituals</button>
+          <button class="service-filter-btn" type="button" role="tab" aria-selected="false" data-filter="Consultations">Consultations</button>
+        </div>
         <div class="services-grid" id="services-list" aria-live="polite"><p class="loading-note">A little something for your hair is on its way.</p></div>
-        <button class="button button-outline services-cta" type="button" data-book>Let’s find your service</button>
+        <div class="services-cta-wrap">
+          <button class="button button-dark services-cta" type="button" data-book>Book an appointment</button>
+          <button class="button button-outline" type="button" data-book-service="complimentary-consultation">Book complimentary consult</button>
+        </div>
       </section>
       <section class="team-section" id="team">
         <div class="team-intro">
@@ -69,27 +306,208 @@
         <div class="team-grid" id="stylists-list" aria-live="polite"><p class="loading-note">Meet the lovely humans behind the chairs.</p></div>
       </section>
       <section class="gallery-section" id="studio">
-        <div class="gallery-heading"><div><span class="eyebrow">A FEELING, NOT JUST A FINISH</span><h2>The Luma <em>feeling.</em></h2></div><p>Come as you are. Leave a little more yourself.</p></div>
+        <div class="gallery-heading">
+          <div><span class="eyebrow">HAIR TRANSFORMATIONS &amp; STUDIO</span><h2>The Luma <em>feeling.</em></h2></div>
+          <p>Come as you are. Leave a little more yourself.</p>
+        </div>
+
+        <!-- Interactive Before & After Transformation Slider -->
+        <div class="transformation-card" data-3d-card="true">
+          <div class="transformation-header">
+            <div>
+              <span class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> SIGNATURE TRANSFORMATION</span>
+              <h3>Dimensional Balayage &amp; Silk Blowout</h3>
+            </div>
+            <div class="transformation-pill">Drag slider to compare</div>
+          </div>
+          <div class="transformation-stage" id="transformation-stage" aria-label="Interactive before and after comparison of hair balayage transformation">
+            <div class="transformation-after">
+              <img src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=1200&q=85" alt="After: Dimensional lived-in balayage with high-shine lived-in finish" loading="lazy">
+              <span class="tf-badge tf-badge-after">AFTER · Lived-in Balayage &amp; Gloss</span>
+            </div>
+            <div class="transformation-before" id="transformation-before">
+              <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=85" alt="Before: Natural hair base prior to color placement" loading="lazy">
+              <span class="tf-badge tf-badge-before">BEFORE · Natural Base</span>
+            </div>
+            <div class="transformation-handle" id="transformation-handle" role="slider" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Hair transformation comparison slider" tabindex="0">
+              <div class="handle-bar"></div>
+              <div class="handle-disk" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+              <div class="handle-bar"></div>
+            </div>
+          </div>
+          <div class="transformation-foot">
+            <p>Hand-painted, sun-catching dimension tailored to each guest's natural part and texture, sealed with a restorative gloss treatment.</p>
+            <button class="button button-outline button-small" type="button" data-book-service="balayage">Book this transformation</button>
+          </div>
+        </div>
+
         <div class="gallery-grid">
-          <figure><div class="photo-frame"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=900&q=85" alt="Sunlit, thoughtfully designed salon interior" loading="lazy"></div><figcaption>A space to settle in.</figcaption></figure>
-          <figure><div class="photo-frame"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=85" alt="Stylist carefully finishing long, glossy hair" loading="lazy"></div><figcaption>Considered, personal styling.</figcaption></figure>
-          <figure><div class="photo-frame"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=85" alt="Welcoming neighborhood hair studio" loading="lazy"></div><figcaption>Good people. Good hair days.</figcaption></figure>
-          <figure><div class="photo-frame"><img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=900&q=85" alt="Professional stylist working with a salon client" loading="lazy"></div><figcaption>Professional, never rushed.</figcaption></figure>
+          <figure data-3d-card="true"><div class="photo-frame"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=900&q=85" alt="Sunlit, thoughtfully designed salon interior" loading="lazy"></div><figcaption>A space to settle in.</figcaption></figure>
+          <figure data-3d-card="true"><div class="photo-frame"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=85" alt="Stylist carefully finishing long, glossy hair" loading="lazy"></div><figcaption>Considered, personal styling.</figcaption></figure>
+          <figure data-3d-card="true"><div class="photo-frame"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=85" alt="Welcoming neighborhood hair studio" loading="lazy"></div><figcaption>Good people. Good hair days.</figcaption></figure>
+          <figure data-3d-card="true"><div class="photo-frame"><img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=900&q=85" alt="Professional stylist working with a salon client" loading="lazy"></div><figcaption>Professional, never rushed.</figcaption></figure>
         </div>
       </section>
       <section class="quote-section" aria-labelledby="approach-label">
         <span class="eyebrow" id="approach-label">THE LUMA APPROACH</span>
-        <div class="quote-mark" aria-hidden="true">✳</div>
+        <div class="quote-mark three-d-asterisk" aria-hidden="true">✳</div>
         <blockquote>Good hair isn’t one-size-fits-all. It starts with listening, thoughtful work and a little <em>time for you.</em></blockquote>
         <p class="quote-credit">A neighborhood studio for considered colour and modern cuts.</p>
       </section>
+
+      <!-- Client Reviews & Community Praise Carousel -->
+      <section class="reviews-section" id="reviews" aria-labelledby="reviews-heading">
+        <div class="reviews-header">
+          <div>
+            <span class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> REAL GUEST EXPERIENCES</span>
+            <h2 id="reviews-heading">Loved by our<br><em>Brooklyn community.</em></h2>
+          </div>
+          <div class="reviews-badge" data-3d-card="true">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <strong>4.9 / 5.0 Rating</strong>
+            <span>Based on 280+ verified Google &amp; Yelp reviews</span>
+          </div>
+        </div>
+
+        <div class="reviews-carousel-wrap">
+          <div class="reviews-track" id="reviews-track">
+            <!-- Review 1 -->
+            <article class="review-card active" data-3d-card="true">
+              <div class="review-stars">★★★★★</div>
+              <blockquote>“Maya gave me the lived-in balayage of my dreams. The grow-out is completely seamless even 4 months later with zero harsh lines. The vibe at Luma is unhurried, warm, and restorative.”</blockquote>
+              <div class="review-author">
+                <div class="author-avatar">SL</div>
+                <div class="author-info">
+                  <strong>Sophia Laurent</strong>
+                  <span>Williamsburg, NY · Balayage with Maya</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Review 2 -->
+            <article class="review-card" data-3d-card="true">
+              <div class="review-stars">★★★★★</div>
+              <blockquote>“Jules is an absolute master of modern shears and texture. My wavy hair now falls into place effortlessly every single morning without fighting a round brush.”</blockquote>
+              <div class="review-author">
+                <div class="author-avatar">MV</div>
+                <div class="author-info">
+                  <strong>Marcus Vance</strong>
+                  <span>Greenpoint, NY · Signature Cut with Jules</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Review 3 -->
+            <article class="review-card" data-3d-card="true">
+              <div class="review-stars">★★★★★</div>
+              <blockquote>“The Deep Repair Ritual with Imani literally brought my bleached hair back to life. It feels like liquid silk. The studio feels like a private sanctuary tucked right off Bedford Ave.”</blockquote>
+              <div class="review-author">
+                <div class="author-avatar">CD</div>
+                <div class="author-info">
+                  <strong>Chloe Diaz</strong>
+                  <span>Bushwick, NY · Deep Repair Ritual with Imani</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Review 4 -->
+            <article class="review-card" data-3d-card="true">
+              <div class="review-stars">★★★★★</div>
+              <blockquote>“From the warm herbal tea upon arrival to the relaxed 1-on-1 consultation, everything at Luma feels like a gentle exhale. There’s no rushed conveyor-belt feeling.”</blockquote>
+              <div class="review-author">
+                <div class="author-avatar">ER</div>
+                <div class="author-info">
+                  <strong>Elena Rossi</strong>
+                  <span>Manhattan, NY · Gloss &amp; Blowout with Jules</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="reviews-nav">
+            <button class="reviews-nav-btn prev" id="reviews-prev" type="button" aria-label="Previous review">←</button>
+            <div class="reviews-dots" id="reviews-dots" aria-label="Review pagination">
+              <button class="dot active" type="button" aria-label="View review 1" data-index="0"></button>
+              <button class="dot" type="button" aria-label="View review 2" data-index="1"></button>
+              <button class="dot" type="button" aria-label="View review 3" data-index="2"></button>
+              <button class="dot" type="button" aria-label="View review 4" data-index="3"></button>
+            </div>
+            <button class="reviews-nav-btn next" id="reviews-next" type="button" aria-label="Next review">→</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Frequently Asked Questions Accordion -->
+      <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+        <div class="faq-header">
+          <span class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> EVERYTHING YOU NEED TO KNOW</span>
+          <h2 id="faq-heading">Frequently asked<br><em>questions.</em></h2>
+          <p>Clear details, transparent policies, and thoughtful answers before your visit.</p>
+        </div>
+
+        <div class="faq-accordion" id="faq-accordion">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Do I need a consultation before booking Balayage or major colour?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>Yes! We require a quick, complimentary 20-minute colour consultation before any first-time balayage. It allows us to examine your current strand health, discuss your hair history, map out your goals, and formulate a custom plan so your appointment goes smoothly and safely.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>What is your cancellation and rescheduling policy?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>To keep your chair reserved specifically for you with zero double-booking, we kindly ask for at least 24 hours’ notice if your schedule changes. Cancellations within 24 hours or missed visits may incur a policy charge.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>How should I arrive for my appointment?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>Please arrive with dry hair in its natural texture (washed within 24–48 hours) without heavy styling products. This allows your stylist to analyze your natural fall, cowlicks, and curl patterns.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Can I choose a specific stylist or book first available?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>Absolutely. You can select your favorite stylist (Maya, Jules, or Imani) to match your aesthetic, or choose “First Available Stylist” to see the earliest open appointment on your preferred date.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Where is Luma Studio and how do I get there?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>We are conveniently located at <strong>214 Bedford Avenue</strong> in Williamsburg, Brooklyn. We’re just a 4-minute walk from the Bedford Ave station on the <strong>L Train</strong>, or a short walk from the Nassau Ave stop on the <strong>G Train</strong>.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
       <section class="visit-section" id="visit">
         <div class="visit-copy"><span class="eyebrow">YOUR CHAIR IS WAITING</span><h2>Good things<br>are <em>nearby.</em></h2><p>A good hair day is closer than you think. Swing by, say hello, stay awhile.</p><button class="button button-dark" type="button" data-book>Save me a seat</button></div>
-        <div class="visit-card">
-          <div class="visit-card-top"><div><span class="eyebrow">COME ON IN</span><h3>Luma Studio</h3></div><span class="visit-icon" aria-hidden="true">✳</span></div>
+        <div class="visit-card" data-3d-card="true">
+          <div class="visit-card-top"><div><span class="eyebrow">COME ON IN</span><h3>Luma Studio</h3></div><span class="visit-icon three-d-asterisk" aria-hidden="true">✳</span></div>
           <div class="visit-contact">
-            <a href="https://maps.google.com/?q=214+Bedford+Avenue+Brooklyn+NY" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"></path><circle cx="12" cy="10" r="2.3"></circle></svg><span class="contact-detail"><strong>VISIT US</strong><span>214 Bedford Avenue<br>Brooklyn, NY 11211</span></span><span class="visually-hidden"> (opens Google Maps in a new tab)</span></a>
-            <a href="tel:+17185550142"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.8-3 2-3Z"></path></svg><span class="contact-detail"><strong>CALL US</strong><span>(718) 555-0142</span></span></a>
+            <a href="https://maps.google.com/?q=214+Bedford+Avenue+Brooklyn+NY" target="_blank" rel="noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"></path><circle cx="12" cy="10" r="2.3"></circle></svg><span class="contact-detail"><strong>VISIT US</strong><span>214 Bedford Avenue<br>Brooklyn, NY 11211</span></span><span class="visually-hidden"> (opens Google Maps in a new tab)</span></a>
+            <a href="tel:+17185550142"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.8-3 2-3Z"></path></svg><span class="contact-detail"><strong>CALL US</strong><span>(718) 555-0142</span></span></a>
           </div>
           <div class="visit-divider"></div>
           <h4 class="visually-hidden">Opening hours</h4>
@@ -106,25 +524,24 @@
         <div>
           <h2 class="footer-heading">Visit &amp; contact</h2>
           <div class="footer-contact">
-            <a href="https://maps.google.com/?q=214+Bedford+Avenue+Brooklyn+NY" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"></path><circle cx="12" cy="10" r="2.3"></circle></svg><span>214 Bedford Avenue, Brooklyn, NY 11211<span class="visually-hidden"> (opens Google Maps in a new tab)</span></span></a>
-            <a href="tel:+17185550142"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.8-3 2-3Z"></path></svg><span>(718) 555-0142</span></a>
-            <a href="mailto:hello@lumastudio.example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg><span>hello@lumastudio.example</span></a>
+            <a href="https://maps.google.com/?q=214+Bedford+Avenue+Brooklyn+NY" target="_blank" rel="noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"></path><circle cx="12" cy="10" r="2.3"></circle></svg><span>214 Bedford Avenue, Brooklyn, NY 11211<span class="visually-hidden"> (opens Google Maps in a new tab)</span></span></a>
+            <a href="tel:+17185550142"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.8-3 2-3Z"></path></svg><span>(718) 555-0142</span></a>
+            <a href="mailto:hello@lumastudio.example"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg><span>hello@lumastudio.example</span></a>
           </div>
         </div>
         <div>
           <h2 class="footer-heading" id="social-heading">Follow along</h2>
-          <!-- Placeholder destinations: replace with the salon's real Instagram, LinkedIn and Facebook profile URLs. -->
           <nav class="social-links" aria-labelledby="social-heading">
             <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle class="social-icon-dot" cx="17.7" cy="6.8" r="1"></circle></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle class="social-icon-dot" cx="17.7" cy="6.8" r="1"></circle></svg>
               <span>Instagram<span class="visually-hidden"> (opens in a new tab)</span></span>
             </a>
             <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v10M5 5v.1M10 19v-6a4 4 0 0 1 8 0v6M10 9v10"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v10M5 5v.1M10 19v-6a4 4 0 0 1 8 0v6M10 9v10"></path></svg>
               <span>LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></span>
             </a>
             <a href="https://www.facebook.com/" target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21v-8h3l.5-4H14V7c0-1.2.4-2 2-2h2V1.5c-.7-.1-1.8-.2-3-.2-3.1 0-5 1.9-5 5.3V9H7v4h3v8"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21v-8h3l.5-4H14V7c0-1.2.4-2 2-2h2V1.5c-.7-.1-1.8-.2-3-.2-3.1 0-5 1.9-5 5.3V9H7v4h3v8"></path></svg>
               <span>Facebook<span class="visually-hidden"> (opens in a new tab)</span></span>
             </a>
           </nav>
@@ -134,8 +551,11 @@
         <p>Independent · Brooklyn, New York</p>
         <nav class="footer-nav-links" aria-label="Explore the site">
           <a href="#services">Services</a>
+          <a href="#quiz">Hair Quiz</a>
           <a href="#team">Our people</a>
           <a href="#studio">The studio</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#faq">FAQ</a>
           <a href="#visit">Find us</a>
           <a class="footer-admin-link" href="/admin">Staff sign in</a>
         </nav>

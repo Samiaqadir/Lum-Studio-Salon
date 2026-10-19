@@ -37,9 +37,34 @@
         </form>
       </section>
       <section class="admin-dashboard" id="admin-dashboard" hidden>
-        <div class="dashboard-heading"><div><span class="eyebrow">YOUR SALON, AT A GLANCE</span><h1>A little <em>overview.</em></h1></div><button class="button button-outline-light button-small" id="admin-signout" type="button">Sign out</button></div>
+        <div class="dashboard-heading">
+          <div>
+            <span class="eyebrow">YOUR SALON, AT A GLANCE</span>
+            <h1>A little <em>overview.</em></h1>
+          </div>
+          <button class="button button-outline-light button-small" id="admin-signout" type="button">Sign out</button>
+        </div>
         <div class="dashboard-stats" id="dashboard-stats"></div>
-        <div class="dashboard-list-heading"><h2>Appointments</h2><button class="button button-outline button-small" id="refresh-bookings" type="button">Refresh</button></div>
+        <div class="dashboard-controls">
+          <div class="admin-search-wrap">
+            <input class="booking-input admin-search-input" id="admin-search" type="search" placeholder="Search guests by name, email, phone, or service…" aria-label="Search appointments">
+          </div>
+          <div class="admin-filter-pills" role="tablist" aria-label="Filter bookings by status">
+            <button type="button" class="admin-pill active" data-filter="all">All</button>
+            <button type="button" class="admin-pill" data-filter="confirmed">Confirmed</button>
+            <button type="button" class="admin-pill" data-filter="checked-in">Checked-in</button>
+            <button type="button" class="admin-pill" data-filter="completed">Completed</button>
+            <button type="button" class="admin-pill" data-filter="cancelled">Cancelled</button>
+            <button type="button" class="admin-pill" data-filter="no-show">No-show</button>
+          </div>
+        </div>
+        <div class="dashboard-list-heading">
+          <h2>Appointments (<span id="appointment-count">0</span>)</h2>
+          <div class="dashboard-heading-actions">
+            <button class="button button-outline button-small" id="export-csv" type="button">📥 Export CSV</button>
+            <button class="button button-outline button-small" id="refresh-bookings" type="button">↻ Refresh</button>
+          </div>
+        </div>
         <div class="appointment-list" id="appointment-list" aria-live="polite"></div>
       </section>
       <div class="toast" id="admin-toast" role="status" aria-live="polite"></div>
