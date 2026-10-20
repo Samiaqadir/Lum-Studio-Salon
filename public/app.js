@@ -381,20 +381,20 @@ function setupRotatingHeadline() {
 
 function setupHeroParallax() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const heroVisual = document.querySelector("#hero-visual-card");
-  const heroGrid = document.querySelector(".hero-image-grid");
-  const badge = document.querySelector(".hero-floating-badge");
-  if (!heroVisual || !heroGrid) return;
+  const heroBanner = document.querySelector(".hero-banner");
+  const bgImage = document.querySelector(".hero-bg-image");
+  const sconces = document.querySelector(".hero-sconce-lights");
+  if (!heroBanner || !bgImage) return;
 
   let currentX = 0, currentY = 0, targetX = 0, targetY = 0;
   let animationFrame;
 
   function update() {
-    currentX += (targetX - currentX) * 0.08;
-    currentY += (targetY - currentY) * 0.08;
-    heroGrid.style.transform = `rotateY(${currentX * 10}deg) rotateX(${-currentY * 10}deg)`;
-    if (badge) {
-      badge.style.transform = `translate3d(${currentX * 18}px, ${currentY * 18}px, 0)`;
+    currentX += (targetX - currentX) * 0.06;
+    currentY += (targetY - currentY) * 0.06;
+    bgImage.style.transform = `scale(1.04) translate3d(${currentX * -18}px, ${currentY * -12}px, 0)`;
+    if (sconces) {
+      sconces.style.transform = `translateY(calc(-50% + ${currentY * 16}px)) translate3d(${currentX * 12}px, 0, 0)`;
     }
     if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
       animationFrame = requestAnimationFrame(update);
@@ -403,16 +403,14 @@ function setupHeroParallax() {
     }
   }
 
-  heroVisual.addEventListener("mousemove", (e) => {
-    const rect = heroVisual.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    targetX = x;
-    targetY = y;
+  heroBanner.addEventListener("mousemove", (e) => {
+    const rect = heroBanner.getBoundingClientRect();
+    targetX = (e.clientX - rect.left) / rect.width - 0.5;
+    targetY = (e.clientY - rect.top) / rect.height - 0.5;
     if (!animationFrame) animationFrame = requestAnimationFrame(update);
   });
 
-  heroVisual.addEventListener("mouseleave", () => {
+  heroBanner.addEventListener("mouseleave", () => {
     targetX = 0;
     targetY = 0;
     if (!animationFrame) animationFrame = requestAnimationFrame(update);
@@ -435,7 +433,7 @@ function setupScrollAnimations() {
   }
 
   const selectors = [
-    ".hero-copy > *", ".hero-visual", ".intro > *", ".section-heading > *",
+    ".hero-centered-content > *", ".intro > *", ".section-heading > *",
     ".service-group", ".services-cta", ".team-intro-copy > *", ".team-feature-image",
     ".stylist-card", ".gallery-heading > *", ".gallery-grid figure", ".quote-section > *",
     ".visit-section > *", ".footer-main > *"

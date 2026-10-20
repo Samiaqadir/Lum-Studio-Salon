@@ -15,38 +15,90 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="top-info-bar">
+      <div class="top-info-inner">
+        <div class="top-info-left">
+          <span class="info-item">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg>
+            <span>Send Mail <a href="mailto:hello@lumastudio.example">hello@lumastudio.example</a></span>
+          </span>
+          <span class="info-divider" aria-hidden="true">•</span>
+          <span class="info-item">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
+            <span>Sunday Closed · Daily: 10 am – 8 pm</span>
+          </span>
+        </div>
+        <div class="top-info-right">
+          <nav class="top-social-links" aria-label="Social profiles">
+            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 21v-8h3l.5-4H14V7c0-1.2.4-2 2-2h2V1.5c-.7-.1-1.8-.2-3-.2-3.1 0-5 1.9-5 5.3V9H7v4h3v8"></path></svg></a>
+            <a href="https://x.com/" target="_blank" rel="noreferrer" aria-label="Twitter / X"><svg viewBox="0 0 24 24"><path d="m4 4 7.2 9.6L4 20h2.4l5.9-5.3L16.8 20H20l-7.6-10.1L19.4 4h-2.4l-5.4 4.8L7.2 4z"></path></svg></a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle class="social-icon-dot" cx="17.7" cy="6.8" r="1"></circle></svg></a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M5 9v10M5 5v.1M10 19v-6a4 4 0 0 1 8 0v6M10 9v10"></path></svg></a>
+          </nav>
+        </div>
+      </div>
+    </div>
     <header class="site-header">
-      <a class="wordmark" href="#home" aria-label="Luma Hair Studio, back to top"><span class="wordmark-name">luma<span>.</span></span><small>HAIR STUDIO</small></a>
+      <a class="wordmark" href="#home" aria-label="Luma Hair Studio, back to top">
+        <span class="wordmark-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M4 21h16M12 16v5"></path></svg>
+        </span>
+        <div class="wordmark-text">
+          <span class="wordmark-name">luma<span>.</span></span>
+          <small>HAIR STUDIO</small>
+        </div>
+      </a>
       <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
       <nav class="main-nav" id="main-nav" aria-label="Main navigation">
-        <a href="#services">Services</a><a href="#team">Our people</a><a href="#studio">The studio</a><a href="#visit">Find us</a>
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#team">Our people</a>
+        <a href="#studio">The studio</a>
+        <a href="#visit">Contact</a>
+      </nav>
+      <div class="header-action-group">
+        <a class="header-phone-cta" href="tel:+17185550142" aria-label="Call salon at (718) 555-0142">
+          <span class="cta-phone-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.8-3 2-3Z"></path></svg>
+          </span>
+          <span class="cta-phone-text">
+            <small>Call to Action</small>
+            <strong>(718) 555-0142</strong>
+          </span>
+        </a>
         <a class="button button-outline button-small nav-admin" href="/admin">Staff sign in</a>
         <button class="button button-dark button-small nav-book" type="button" data-book>Book a visit</button>
-      </nav>
+      </div>
     </header>
     <main id="main" tabindex="-1">
-      <section class="hero" id="home">
-        <div class="ambient-orbs-container" aria-hidden="true">
-          <div class="ambient-orb orb-1"></div>
-          <div class="ambient-orb orb-2"></div>
-        </div>
-        <div class="hero-copy">
-          <span class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> INDEPENDENT HAIR STUDIO · BROOKLYN, NEW YORK</span>
-          <h1 class="hero-title">Hair that feels<br><span class="rotating-text-wrap" aria-label="like you."><em class="rotating-word is-active">like you.</em><em class="rotating-word">effortless.</em><em class="rotating-word">radiant.</em><em class="rotating-word">alive.</em></span></h1>
-          <p class="hero-lede">Considered colour, modern cuts and genuinely good hair days. A neighborhood studio made for the way you want to feel.</p>
-          <div class="hero-actions"><button class="button button-dark" type="button" data-book>Book your appointment</button><a class="button button-outline" href="#services">Explore our services</a></div>
-          <div class="hero-note"><div class="avatar-stack" aria-hidden="true"><span>M</span><span>J</span><span>I</span></div><p><strong>A good hair day, on repeat.</strong><br>Thoughtful work by people who care.</p></div>
-        </div>
-        <div class="hero-visual" id="hero-visual-card">
-          <div class="hero-image-grid" role="group" aria-label="A glimpse inside the salon">
-            <img class="hero-img-float hero-img-1" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=85" alt="Stylist creating a beautiful finish in a sunlit salon" fetchpriority="high">
-            <img class="hero-img-float hero-img-2" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=85" alt="Warm, welcoming salon interior" fetchpriority="high">
-            <img class="hero-img-float hero-img-3" src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=85" alt="Long, healthy hair styled with a natural finish">
-            <img class="hero-img-float hero-img-4" src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=85" alt="Professional stylist working with a salon client">
+      <section class="hero hero-banner" id="home">
+        <div class="hero-bg-layer" aria-hidden="true">
+          <img class="hero-bg-image" src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=2000&q=85" alt="" fetchpriority="high">
+          <div class="hero-bg-overlay"></div>
+          <div class="ambient-orbs-container">
+            <div class="ambient-orb orb-1"></div>
+            <div class="ambient-orb orb-2"></div>
           </div>
-          <div class="hero-floating-badge" aria-hidden="true">
-            <span class="badge-sparkle">✦</span>
-            <span>Now Booking Brooklyn</span>
+          <div class="hero-sconce-lights">
+            <span class="sconce-bulb sconce-1"></span>
+            <span class="sconce-bulb sconce-2"></span>
+            <span class="sconce-bulb sconce-3"></span>
+            <span class="sconce-bulb sconce-4"></span>
+          </div>
+        </div>
+        <div class="hero-centered-content">
+          <div class="hero-badge-wrap">
+            <span class="hero-category-tag">Haircut &amp; Styling</span>
+          </div>
+          <h1 class="hero-title hero-banner-title">Hair that feels<br><span class="rotating-text-wrap" aria-label="like you."><em class="rotating-word is-active">like you.</em><em class="rotating-word">effortless.</em><em class="rotating-word">radiant.</em><em class="rotating-word">alive.</em></span></h1>
+          <p class="hero-lede hero-banner-lede">Considered colour, modern cuts and genuinely good hair days. A neighborhood studio made for the way you want to feel.</p>
+          <div class="hero-banner-actions">
+            <button class="button hero-main-cta" type="button" data-book>Book An Appointment</button>
+            <a class="button button-outline-light hero-sub-cta" href="#services">Explore Services</a>
+          </div>
+          <div class="hero-banner-meta">
+            <span class="meta-dot"></span>
+            <span>Independent Hair Studio · 214 Bedford Ave, Brooklyn</span>
           </div>
         </div>
       </section>
