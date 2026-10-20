@@ -26,23 +26,50 @@
     </header>
     <main id="main" tabindex="-1">
       <section class="hero" id="home">
+        <div class="ambient-orbs-container" aria-hidden="true">
+          <div class="ambient-orb orb-1"></div>
+          <div class="ambient-orb orb-2"></div>
+        </div>
         <div class="hero-copy">
           <span class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> INDEPENDENT HAIR STUDIO · BROOKLYN, NEW YORK</span>
-          <h1>Hair that feels<br><em>like you.</em></h1>
+          <h1 class="hero-title">Hair that feels<br><span class="rotating-text-wrap" aria-label="like you."><em class="rotating-word is-active">like you.</em><em class="rotating-word">effortless.</em><em class="rotating-word">radiant.</em><em class="rotating-word">alive.</em></span></h1>
           <p class="hero-lede">Considered colour, modern cuts and genuinely good hair days. A neighborhood studio made for the way you want to feel.</p>
           <div class="hero-actions"><button class="button button-dark" type="button" data-book>Book your appointment</button><a class="button button-outline" href="#services">Explore our services</a></div>
           <div class="hero-note"><div class="avatar-stack" aria-hidden="true"><span>M</span><span>J</span><span>I</span></div><p><strong>A good hair day, on repeat.</strong><br>Thoughtful work by people who care.</p></div>
         </div>
-        <div class="hero-visual">
+        <div class="hero-visual" id="hero-visual-card">
           <div class="hero-image-grid" role="group" aria-label="A glimpse inside the salon">
-            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=85" alt="Stylist creating a beautiful finish in a sunlit salon" fetchpriority="high">
-            <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=85" alt="Warm, welcoming salon interior" fetchpriority="high">
-            <img src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=85" alt="Long, healthy hair styled with a natural finish">
-            <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=85" alt="Professional stylist working with a salon client">
+            <img class="hero-img-float hero-img-1" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=85" alt="Stylist creating a beautiful finish in a sunlit salon" fetchpriority="high">
+            <img class="hero-img-float hero-img-2" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=85" alt="Warm, welcoming salon interior" fetchpriority="high">
+            <img class="hero-img-float hero-img-3" src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=85" alt="Long, healthy hair styled with a natural finish">
+            <img class="hero-img-float hero-img-4" src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=85" alt="Professional stylist working with a salon client">
+          </div>
+          <div class="hero-floating-badge" aria-hidden="true">
+            <span class="badge-sparkle">✦</span>
+            <span>Now Booking Brooklyn</span>
           </div>
         </div>
       </section>
-      <section class="ticker" aria-label="Studio values"><div><span>THOUGHTFUL COLOUR</span><i aria-hidden="true">✳</i><span>MODERN CUTS</span><i aria-hidden="true">✳</i><span>GOOD HAIR, GOOD ENERGY</span><i aria-hidden="true">✳</i><span>MADE FOR YOU</span></div></section>
+      <section class="ticker" aria-label="Studio values">
+        <div class="ticker-track">
+          <div class="ticker-content">
+            <span>THOUGHTFUL COLOUR</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>MODERN CUTS</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>GOOD HAIR, GOOD ENERGY</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>MADE FOR YOU</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>BROOKLYN, NY</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>LIVED-IN TEXTURE</span><i class="spinning-star" aria-hidden="true">✳</i>
+          </div>
+          <div class="ticker-content" aria-hidden="true">
+            <span>THOUGHTFUL COLOUR</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>MODERN CUTS</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>GOOD HAIR, GOOD ENERGY</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>MADE FOR YOU</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>BROOKLYN, NY</span><i class="spinning-star" aria-hidden="true">✳</i>
+            <span>LIVED-IN TEXTURE</span><i class="spinning-star" aria-hidden="true">✳</i>
+          </div>
+        </div>
+      </section>
       <section class="intro" aria-labelledby="intro-label">
         <span class="eyebrow" id="intro-label">A LITTLE ABOUT US</span>
         <p class="intro-copy">A neighborhood salon with a <em>softer touch.</em> We do thoughtful colour, cuts that grow out beautifully, and the kind of appointment that feels like an exhale.</p>

@@ -351,6 +351,8 @@ document.addEventListener("keydown", (event) => {
 
 async function initialise() {
   setupScrollAnimations();
+  setupRotatingHeadline();
+  setupHeroParallax();
   try {
     [salon, services, stylists] = await Promise.all([
       api("/api/salon"),
@@ -364,6 +366,57 @@ async function initialise() {
   } catch (error) {
     showToast(`The studio details could not load: ${error.message}`);
   }
+}
+
+function setupRotatingHeadline() {
+  const words = document.querySelectorAll(".rotating-word");
+  if (words.length <= 1) return;
+  let currentIndex = 0;
+  setInterval(() => {
+    words[currentIndex].classList.remove("is-active");
+    currentIndex = (currentIndex + 1) % words.length;
+    words[currentIndex].classList.add("is-active");
+  }, 3200);
+}
+
+function setupHeroParallax() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const heroVisual = document.querySelector("#hero-visual-card");
+  const heroGrid = document.querySelector(".hero-image-grid");
+  const badge = document.querySelector(".hero-floating-badge");
+  if (!heroVisual || !heroGrid) return;
+
+  let currentX = 0, currentY = 0, targetX = 0, targetY = 0;
+  let animationFrame;
+
+  function update() {
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+    heroGrid.style.transform = `rotateY(${currentX * 10}deg) rotateX(${-currentY * 10}deg)`;
+    if (badge) {
+      badge.style.transform = `translate3d(${currentX * 18}px, ${currentY * 18}px, 0)`;
+    }
+    if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
+      animationFrame = requestAnimationFrame(update);
+    } else {
+      animationFrame = null;
+    }
+  }
+
+  heroVisual.addEventListener("mousemove", (e) => {
+    const rect = heroVisual.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    targetX = x;
+    targetY = y;
+    if (!animationFrame) animationFrame = requestAnimationFrame(update);
+  });
+
+  heroVisual.addEventListener("mouseleave", () => {
+    targetX = 0;
+    targetY = 0;
+    if (!animationFrame) animationFrame = requestAnimationFrame(update);
+  });
 }
 
 let revealObserver;
