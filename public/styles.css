@@ -136,9 +136,9 @@ h1, h2, h3, h4, p { margin-top: 0; }
 /* Header Action Group (Phone CTA + Staff + Book) */
 .header-action-group { display: flex; align-items: center; gap: 18px; }
 .header-phone-cta { display: flex; align-items: center; gap: 12px; text-decoration: none; padding-right: 8px; border-right: 1px solid var(--line); }
-.cta-phone-circle { width: 44px; height: 44px; border-radius: 50%; background: var(--rust); color: #fff; display: grid; place-items: center; box-shadow: 0 4px 14px rgba(166, 107, 80, .32); transition: transform .25s ease, background-color .25s; }
+.cta-phone-circle { width: 44px; height: 44px; min-width: 44px; min-height: 44px; max-width: 44px; max-height: 44px; border-radius: 50%; background: var(--rust); color: #fff; display: grid; place-items: center; overflow: hidden; box-shadow: 0 4px 14px rgba(166, 107, 80, .32); transition: transform .25s ease, background-color .25s; }
 .header-phone-cta:hover .cta-phone-circle { transform: scale(1.08); background: #8e583f; }
-.cta-phone-circle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cta-phone-circle svg { width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important; max-width: 20px !important; max-height: 20px !important; fill: none; stroke: #fff !important; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 .cta-phone-text { display: flex; flex-direction: column; line-height: 1.25; }
 .cta-phone-text small { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .6px; text-transform: uppercase; }
 .cta-phone-text strong { font-size: 14.5px; font-weight: 700; color: var(--rust); transition: color .2s; }
@@ -165,24 +165,10 @@ h1, h2, h3, h4, p { margin-top: 0; }
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.hero-bg-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 32%;
-  filter: brightness(.92);
-  transform: scale(1.02);
-  transition: transform 6s cubic-bezier(.2, .7, .2, 1);
-}
-.hero-banner:hover .hero-bg-image { transform: scale(1.055); }
-.hero-bg-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(20, 24, 19, .74) 0%, rgba(20, 24, 19, .54) 45%, rgba(20, 24, 19, .88) 100%);
-  backdrop-filter: contrast(105%);
+  background-color: #1a1e19;
+  background-image: linear-gradient(180deg, rgba(20, 24, 19, .76) 0%, rgba(20, 24, 19, .55) 45%, rgba(20, 24, 19, .90) 100%), url('https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=2000&q=85');
+  background-size: cover;
+  background-position: center 32%;
 }
 
 /* Sconce Lights on Left of Hero */
@@ -316,13 +302,19 @@ h1, h2, h3, h4, p { margin-top: 0; }
 }
 
 /* Dynamic Rotating Text in Headline */
-.rotating-text-wrap { position: relative; display: inline-grid; vertical-align: bottom; }
-.rotating-word { grid-area: 1 / 1; opacity: 0; transform: translateY(22px) rotateX(30deg); transition: opacity .5s ease, transform .55s cubic-bezier(.16, 1, .3, 1); pointer-events: none; font-style: italic; color: #ddb09a; }
-.rotating-word.is-active { opacity: 1; transform: translateY(0) rotateX(0deg); pointer-events: auto; }
+.rotating-text-wrap { position: relative; display: inline-block; vertical-align: baseline; }
+.rotating-word { display: none; font-style: italic; color: #ddb09a; }
 .rotating-word.is-active {
+  display: inline-block;
+  animation: word-fade-in .5s cubic-bezier(.16, 1, .3, 1) both;
   background: linear-gradient(135deg, #e7c3b2 20%, #d49567 85%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@keyframes word-fade-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .hero-img-2 { animation: float-image-b 8s ease-in-out infinite alternate .4s; }
 .hero-img-3 { animation: float-image-b 8.5s ease-in-out infinite alternate .8s; }

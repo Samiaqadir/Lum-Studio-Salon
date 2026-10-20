@@ -333,7 +333,7 @@ function createSalonServer(options = {}) {
     const contentTypes = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml" };
     response.writeHead(200, {
       "content-type": contentTypes[path.extname(filePath)] || "application/octet-stream",
-      "cache-control": path.extname(filePath) === ".html" ? "no-cache" : "public, max-age=3600",
+      "cache-control": "no-cache, must-revalidate",
       "x-content-type-options": "nosniff",
       "x-frame-options": "DENY",
       "referrer-policy": "strict-origin-when-cross-origin"
