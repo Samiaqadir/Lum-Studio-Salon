@@ -2,7 +2,6 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
-const os = require("node:os");
 
 const PORT = Number(process.env.PORT || 3000);
 const HOLD_MINUTES = 5;
@@ -48,35 +47,16 @@ function readJson(filePath) {
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch (error) {
-    if (error.code === "ENOENT") {
-      try {
-        const tmpPath = path.join(os.tmpdir(), "luma-salon-store.json");
-        if (fs.existsSync(tmpPath)) {
-          return JSON.parse(fs.readFileSync(tmpPath, "utf8"));
-        }
-      } catch {}
-      return null;
-    }
+    if (error.code === "ENOENT") return null;
     throw error;
   }
 }
 
 function writeJson(filePath, value) {
-  try {
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    const temporaryPath = `${filePath}.tmp`;
-    fs.writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { encoding: "utf8", mode: 0o600 });
-    fs.renameSync(temporaryPath, filePath);
-  } catch (err) {
-    if (err.code === "EROFS" || err.code === "EACCES") {
-      const tmpPath = path.join(os.tmpdir(), "luma-salon-store.json");
-      const temporaryPath = `${tmpPath}.tmp`;
-      fs.writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { encoding: "utf8", mode: 0o600 });
-      fs.renameSync(temporaryPath, tmpPath);
-    } else {
-      throw err;
-    }
-  }
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  const temporaryPath = `${filePath}.tmp`;
+  fs.writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { encoding: "utf8", mode: 0o600 });
+  fs.renameSync(temporaryPath, filePath);
 }
 
 function localDateKey(date) {
@@ -350,21 +330,10 @@ function createSalonServer(options = {}) {
     if (!filePath.startsWith(`${PUBLIC_DIR}${path.sep}`) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
       return sendJson(response, 404, { error: "Not found." });
     }
-    const contentTypes = {
-      ".html": "text/html; charset=utf-8",
-      ".css": "text/css; charset=utf-8",
-      ".js": "text/javascript; charset=utf-8",
-      ".svg": "image/svg+xml",
-      ".jpg": "image/jpeg",
-      ".jpeg": "image/jpeg",
-      ".png": "image/png",
-      ".webp": "image/webp"
-    };
+    const contentTypes = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml" };
     response.writeHead(200, {
       "content-type": contentTypes[path.extname(filePath)] || "application/octet-stream",
-      "cache-control": "no-cache, no-store, must-revalidate",
-      "pragma": "no-cache",
-      "expires": "0",
+      "cache-control": path.extname(filePath) === ".html" ? "no-cache" : "public, max-age=3600",
       "x-content-type-options": "nosniff",
       "x-frame-options": "DENY",
       "referrer-policy": "strict-origin-when-cross-origin"
