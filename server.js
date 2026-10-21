@@ -471,6 +471,10 @@ function createSalonServer(options = {}) {
         rawUrl = request.headers["x-matched-path"];
       }
       const url = new URL(rawUrl, `http://${request.headers.host || "localhost"}`);
+      const endpointParam = url.searchParams.get("endpoint");
+      if (endpointParam) {
+        url.pathname = `/api/${endpointParam}`;
+      }
       let pathname = url.pathname;
       if (!pathname.startsWith("/api") && !pathname.includes(".")) {
         const apiCandidate = `/api${pathname.startsWith("/") ? "" : "/"}${pathname}`;

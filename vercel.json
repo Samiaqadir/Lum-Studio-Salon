@@ -7,6 +7,6 @@
     { "source": "/app.js", "destination": "/public/app.js" },
     { "source": "/admin.css", "destination": "/public/admin.css" },
     { "source": "/admin.js", "destination": "/public/admin.js" },
-    { "source": "/api/(.*)", "destination": "/api" }
+    { "source": "/api/(.*)", "destination": "/api?endpoint=$1" }
   ]
 }
