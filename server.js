@@ -447,14 +447,26 @@ function createSalonServer(options = {}) {
 
   async function requestHandler(request, response) {
     try {
-      const requestUrl = request.headers["x-matched-path"] || request.url;
-      const url = new URL(requestUrl, `http://${request.headers.host || "localhost"}`);
-      if (url.pathname.startsWith("/api/")) await handleApi(request, response, url);
+      expireHolds();
+      let rawUrl = request.url || "/";
+      if (rawUrl.startsWith("/api?") && request.headers["x-matched-path"]) {
+        rawUrl = request.headers["x-matched-path"];
+      }
+      const url = new URL(rawUrl, `http://${request.headers.host || "localhost"}`);
+      let pathname = url.pathname;
+      if (!pathname.startsWith("/api") && !pathname.includes(".")) {
+        const apiCandidate = `/api${pathname.startsWith("/") ? "" : "/"}${pathname}`;
+        if (["/api/salon", "/api/services", "/api/stylists", "/api/availability", "/api/holds", "/api/bookings"].some((p) => apiCandidate.startsWith(p))) {
+          pathname = apiCandidate;
+          url.pathname = pathname;
+        }
+      }
+      if (pathname.startsWith("/api/")) await handleApi(request, response, url);
       else if (request.method === "GET") {
-        if (url.pathname === "/admin" || url.pathname === "/admin/") {
+        if (pathname === "/admin" || pathname === "/admin/") {
           return serveStatic(request, response, "/admin.html");
         }
-        return serveStatic(request, response, url.pathname);
+        return serveStatic(request, response, pathname);
       } else sendJson(response, 405, { error: "Method not allowed." });
     } catch (error) {
       if (!response.headersSent) sendJson(response, error.statusCode || 500, { error: error.statusCode ? error.message : "The request could not be completed." });
@@ -465,9 +477,11 @@ function createSalonServer(options = {}) {
 
   const server = http.createServer(requestHandler);
   server.requestHandler = requestHandler;
-  const cleanupTimer = setInterval(() => enqueue(() => expireHolds()).catch((error) => console.error("Hold cleanup failed:", error)), HOLD_CLEANUP_INTERVAL_MS);
-  cleanupTimer.unref();
-  server.on("close", () => clearInterval(cleanupTimer));
+  if (!process.env.VERCEL) {
+    const cleanupTimer = setInterval(() => enqueue(() => expireHolds()).catch((error) => console.error("Hold cleanup failed:", error)), HOLD_CLEANUP_INTERVAL_MS);
+    cleanupTimer.unref();
+    server.on("close", () => clearInterval(cleanupTimer));
+  }
   return server;
 }
 
