@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
+const os = require("node:os");
 
 const PORT = Number(process.env.PORT || 3000);
 const HOLD_MINUTES = 5;
@@ -129,9 +130,17 @@ function timingSafeMatch(provided, expected) {
 }
 
 function createSalonServer(options = {}) {
-  const dataPath = options.dataPath || path.join(__dirname, "data", "store.json");
+  const isCustomDataPath = Boolean(options.dataPath);
+  const defaultDataPath = process.env.DATA_PATH || (process.env.VERCEL ? path.join(os.tmpdir(), "luma-store.json") : path.join(__dirname, "data", "store.json"));
+  const dataPath = options.dataPath || defaultDataPath;
   const adminKey = options.adminKey === undefined ? (process.env.SALON_ADMIN_KEY || "admin123") : options.adminKey;
-  let store = readJson(dataPath) || structuredClone(seed);
+  let store = readJson(dataPath);
+  if (!store && !isCustomDataPath) {
+    store = readJson(path.join(__dirname, "data", "store.json"));
+  }
+  if (!store) {
+    store = structuredClone(seed);
+  }
   let operationQueue = Promise.resolve();
 
   function enqueue(operation) {
@@ -141,7 +150,16 @@ function createSalonServer(options = {}) {
   }
 
   function save() {
-    writeJson(dataPath, store);
+    try {
+      writeJson(dataPath, store);
+    } catch (error) {
+      const fallbackPath = path.join(os.tmpdir(), "luma-store.json");
+      if (dataPath !== fallbackPath) {
+        try {
+          writeJson(fallbackPath, store);
+        } catch (_) {}
+      }
+    }
   }
 
   function expireHolds() {
@@ -163,6 +181,16 @@ function createSalonServer(options = {}) {
   }
 
   function readBody(request) {
+    if (request.body !== undefined && typeof request.body === "object") {
+      return Promise.resolve(request.body);
+    }
+    if (request.body !== undefined && typeof request.body === "string") {
+      try {
+        return Promise.resolve(request.body ? JSON.parse(request.body) : {});
+      } catch {
+        return Promise.reject(Object.assign(new Error("Request body must be valid JSON."), { statusCode: 400 }));
+      }
+    }
     return new Promise((resolve, reject) => {
       let body = "";
       request.on("data", (chunk) => {
@@ -417,9 +445,10 @@ function createSalonServer(options = {}) {
     fs.createReadStream(filePath).pipe(response);
   }
 
-  const server = http.createServer(async (request, response) => {
+  async function requestHandler(request, response) {
     try {
-      const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
+      const requestUrl = request.headers["x-matched-path"] || request.url;
+      const url = new URL(requestUrl, `http://${request.headers.host || "localhost"}`);
       if (url.pathname.startsWith("/api/")) await handleApi(request, response, url);
       else if (request.method === "GET") {
         if (url.pathname === "/admin" || url.pathname === "/admin/") {
@@ -432,7 +461,10 @@ function createSalonServer(options = {}) {
       else response.destroy(error);
       if (!error.statusCode) console.error("Request failed:", error);
     }
-  });
+  }
+
+  const server = http.createServer(requestHandler);
+  server.requestHandler = requestHandler;
   const cleanupTimer = setInterval(() => enqueue(() => expireHolds()).catch((error) => console.error("Hold cleanup failed:", error)), HOLD_CLEANUP_INTERVAL_MS);
   cleanupTimer.unref();
   server.on("close", () => clearInterval(cleanupTimer));
