@@ -447,14 +447,16 @@ function createSalonServer(options = {}) {
       ".jpg": "image/jpeg",
       ".jpeg": "image/jpeg"
     };
+    const content = fs.readFileSync(filePath);
     response.writeHead(200, {
       "content-type": contentTypes[path.extname(filePath)] || "application/octet-stream",
+      "content-length": content.length,
       "cache-control": "no-cache, must-revalidate",
       "x-content-type-options": "nosniff",
       "x-frame-options": "DENY",
       "referrer-policy": "strict-origin-when-cross-origin"
     });
-    fs.createReadStream(filePath).pipe(response);
+    response.end(content);
   }
 
   async function requestHandler(request, response) {
