@@ -430,11 +430,23 @@ function createSalonServer(options = {}) {
     } catch {
       return sendJson(response, 400, { error: "Invalid path." });
     }
-    const filePath = path.resolve(PUBLIC_DIR, `.${decodedPath}`);
-    if (!filePath.startsWith(`${PUBLIC_DIR}${path.sep}`) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    let filePath = path.resolve(PUBLIC_DIR, `.${decodedPath}`);
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      filePath = path.resolve(__dirname, `.${decodedPath}`);
+    }
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
       return sendJson(response, 404, { error: "Not found." });
     }
-    const contentTypes = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml" };
+    const contentTypes = {
+      ".html": "text/html; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".js": "text/javascript; charset=utf-8",
+      ".svg": "image/svg+xml",
+      ".json": "application/json; charset=utf-8",
+      ".png": "image/png",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg"
+    };
     response.writeHead(200, {
       "content-type": contentTypes[path.extname(filePath)] || "application/octet-stream",
       "cache-control": "no-cache, must-revalidate",
@@ -485,12 +497,18 @@ function createSalonServer(options = {}) {
   return server;
 }
 
+const defaultServer = createSalonServer();
+
+const handler = (request, response) => defaultServer.requestHandler(request, response);
+handler.createSalonServer = createSalonServer;
+
 if (require.main === module) {
-  const server = createSalonServer();
-  server.listen(PORT, () => {
+  defaultServer.listen(PORT, () => {
     console.log(`Luma Studio is listening at http://localhost:${PORT}`);
     if (!process.env.SALON_ADMIN_KEY) console.warn("Set SALON_ADMIN_KEY to enable the protected admin dashboard.");
   });
 }
 
-module.exports = { createSalonServer };
+module.exports = handler;
+module.exports.createSalonServer = createSalonServer;
+module.exports.default = handler;
