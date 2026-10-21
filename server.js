@@ -130,7 +130,7 @@ function timingSafeMatch(provided, expected) {
 
 function createSalonServer(options = {}) {
   const dataPath = options.dataPath || path.join(__dirname, "data", "store.json");
-  const adminKey = options.adminKey === undefined ? process.env.SALON_ADMIN_KEY : options.adminKey;
+  const adminKey = options.adminKey === undefined ? (process.env.SALON_ADMIN_KEY || "admin123") : options.adminKey;
   let store = readJson(dataPath) || structuredClone(seed);
   let operationQueue = Promise.resolve();
 
@@ -312,6 +312,82 @@ function createSalonServer(options = {}) {
           appointment.updatedAt = new Date().toISOString();
           save();
           return sendJson(response, 200, { id: appointment.id, status: appointment.status });
+        });
+      }
+      const bookingDeleteMatch = url.pathname.match(/^\/api\/admin\/bookings\/([0-9a-f-]+)$/i);
+      if (request.method === "DELETE" && bookingDeleteMatch) {
+        return enqueue(() => {
+          const index = store.appointments.findIndex((item) => item.id === bookingDeleteMatch[1]);
+          if (index === -1) return sendJson(response, 404, { error: "Appointment not found." });
+          store.appointments.splice(index, 1);
+          save();
+          return sendJson(response, 200, { success: true });
+        });
+      }
+      if (request.method === "POST" && url.pathname === "/api/admin/bookings") {
+        const body = await readBody(request);
+        return enqueue(() => {
+          const name = typeof body.name === "string" ? body.name.trim() : "";
+          const email = typeof body.email === "string" ? body.email.trim() : "";
+          const phone = typeof body.phone === "string" ? body.phone.trim() : "";
+          const serviceId = body.serviceId;
+          const stylistId = body.stylistId;
+          const startAt = body.startAt;
+          if (!name || !email || !serviceId || !stylistId || !startAt) {
+            return sendJson(response, 400, { error: "All appointment fields are required." });
+          }
+          const appointment = {
+            id: crypto.randomUUID(),
+            serviceId,
+            stylistId,
+            startAt,
+            client: { name, email, phone },
+            status: body.status || "confirmed",
+            policyAcceptedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+          };
+          store.appointments.push(appointment);
+          save();
+          return sendJson(response, 201, {
+            id: appointment.id,
+            service: store.services.find((s) => s.id === serviceId)?.name || "Service",
+            stylist: store.stylists.find((s) => s.id === stylistId)?.name || "Stylist",
+            startAt: appointment.startAt,
+            status: appointment.status
+          });
+        });
+      }
+      if (request.method === "POST" && url.pathname === "/api/admin/services") {
+        const body = await readBody(request);
+        return enqueue(() => {
+          const name = typeof body.name === "string" ? body.name.trim() : "";
+          const category = typeof body.category === "string" ? body.category.trim() : "Cuts & styling";
+          const price = Number(body.price) || 0;
+          const durationMinutes = Number(body.durationMinutes) || 45;
+          const description = typeof body.description === "string" ? body.description.trim() : "";
+          if (!name) return sendJson(response, 400, { error: "Service name is required." });
+          const id = body.id || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+          const existing = store.services.find((s) => s.id === id);
+          if (existing) {
+            Object.assign(existing, { name, category, price, durationMinutes, description });
+          } else {
+            store.services.push({
+              id,
+              name,
+              category,
+              durationMinutes,
+              price,
+              description,
+              priceFrom: Boolean(body.priceFrom),
+              requiresConsultation: Boolean(body.requiresConsultation)
+            });
+            // Also enable this service for all stylists by default
+            store.stylists.forEach((stylist) => {
+              if (!stylist.serviceIds.includes(id)) stylist.serviceIds.push(id);
+            });
+          }
+          save();
+          return sendJson(response, 201, store.services);
         });
       }
     }
