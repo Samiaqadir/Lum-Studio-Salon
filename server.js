@@ -46,18 +46,22 @@ const seed = {
 
 function readJson(filePath) {
   try {
+    if (!fs.existsSync(filePath)) return null;
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch (error) {
-    if (error.code === "ENOENT") return null;
-    throw error;
+    return null;
   }
 }
 
 function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const temporaryPath = `${filePath}.tmp`;
-  fs.writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { encoding: "utf8", mode: 0o600 });
-  fs.renameSync(temporaryPath, filePath);
+  try {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    const temporaryPath = `${filePath}.tmp`;
+    fs.writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { encoding: "utf8", mode: 0o600 });
+    fs.renameSync(temporaryPath, filePath);
+  } catch (error) {
+    // In serverless read-only filesystem environments, file writes to root fail gracefully
+  }
 }
 
 function localDateKey(date) {
