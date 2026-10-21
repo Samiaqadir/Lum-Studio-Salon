@@ -5,6 +5,7 @@
   "description": "A salon website and appointment booking system",
   "scripts": {
     "start": "node server.js",
+    "dev": "node server.js",
     "test": "node --test"
   },
   "engines": {
