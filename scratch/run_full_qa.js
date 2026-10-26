@@ -323,16 +323,19 @@ async function runQASuite() {
 
   // Execute all suites
   for (const suite of results.suites) {
+    console.log(`\n--- ${suite.name} ---`);
     for (const t of suite.tests) {
       results.total++;
       try {
         await t.fn();
         t.status = "PASS";
         results.passed++;
+        console.log(`  [PASS] ${t.name}`);
       } catch (err) {
         t.status = "FAIL";
         t.error = err.message;
         results.failed++;
+        console.log(`  [FAIL] ${t.name} -> ${err.message}`);
       }
     }
   }
@@ -342,7 +345,9 @@ async function runQASuite() {
   fs.rmSync(tempDir, { recursive: true, force: true });
 
   fs.writeFileSync(path.join(__dirname, "qa_results.json"), JSON.stringify(results, null, 2), "utf8");
+  console.log(`\n========================================`);
   console.log(`QA Execution Complete: ${results.passed}/${results.total} passed (${results.failed} failed).`);
+  console.log(`========================================\n`);
   return results;
 }
 
