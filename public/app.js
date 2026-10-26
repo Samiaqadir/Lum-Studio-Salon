@@ -2,6 +2,7 @@ const dialog = document.querySelector("#booking-dialog");
 const bookingContent = document.querySelector("#booking-content");
 const toast = document.querySelector("#toast");
 const booking = { serviceId: "", stylistId: "", date: "", startAt: "", holdId: "" };
+const clientState = { name: "", email: "", phone: "", acceptedPolicy: false };
 let services = [];
 let stylists = [];
 let salon = null;
@@ -135,36 +136,90 @@ function renderStepOne(error = "") {
   bookingContent.innerHTML = `
     <h2 id="booking-heading">Let’s find <em>your chair.</em></h2>
     <p class="booking-subtitle">Good things start with a good conversation. Choose your service, your person and the day that works for you.</p>
-    <div class="booking-field"><label class="booking-label" for="booking-service">01 · YOUR SERVICE</label><select class="booking-select" id="booking-service" required>${renderServiceOptions()}</select></div>
-    <div class="booking-fields-row">
-      <div class="booking-field"><label class="booking-label" for="booking-stylist">02 · YOUR PERSON</label><select class="booking-select" id="booking-stylist" required>${renderStylistOptions()}</select></div>
-      <div class="booking-field"><label class="booking-label" for="booking-date">03 · YOUR DAY</label><input class="booking-input" id="booking-date" type="date" min="${todayKey()}" max="${dayKeyAfter(60)}" value="${escapeHtml(booking.date || todayKey())}" required></div>
+    <div class="booking-field">
+      <label class="booking-label" for="booking-service">01 · YOUR SERVICE *</label>
+      <select class="booking-select" id="booking-service" required>${renderServiceOptions()}</select>
+      <span class="field-error" id="error-booking-service" role="alert"></span>
     </div>
-    <div class="booking-field"><span class="booking-label">04 · A TIME THAT WORKS</span><div class="slot-list" id="slot-list"><span class="empty-slots">Choose a service and stylist to see available times.</span></div></div>
+    <div class="booking-fields-row">
+      <div class="booking-field">
+        <label class="booking-label" for="booking-stylist">02 · YOUR PERSON</label>
+        <select class="booking-select" id="booking-stylist">${renderStylistOptions()}</select>
+      </div>
+      <div class="booking-field">
+        <label class="booking-label" for="booking-date">03 · YOUR DAY *</label>
+        <input class="booking-input" id="booking-date" type="date" min="${todayKey()}" max="${dayKeyAfter(60)}" value="${escapeHtml(booking.date || todayKey())}" required>
+        <span class="field-error" id="error-booking-date" role="alert"></span>
+      </div>
+    </div>
+    <div class="booking-field">
+      <span class="booking-label">04 · A TIME THAT WORKS *</span>
+      <div class="slot-list" id="slot-list"><span class="empty-slots">Choose a service and stylist to see available times.</span></div>
+      <span class="field-error" id="error-booking-slot" role="alert"></span>
+    </div>
     <p class="form-error" role="alert">${escapeHtml(error)}</p>
   `;
-  document.querySelector("#booking-service").addEventListener("change", (event) => {
+
+  const serviceSelect = document.querySelector("#booking-service");
+  const serviceError = document.querySelector("#error-booking-service");
+  serviceSelect.addEventListener("change", (event) => {
     booking.serviceId = event.target.value;
+    if (booking.serviceId) {
+      serviceSelect.classList.remove("has-error");
+      serviceError.classList.remove("visible");
+    }
     if (!stylistById(booking.stylistId)?.serviceIds?.includes(booking.serviceId)) booking.stylistId = "";
     loadAvailability();
   });
+
   document.querySelector("#booking-stylist").addEventListener("change", (event) => {
     booking.stylistId = event.target.value;
     loadAvailability();
   });
-  document.querySelector("#booking-date").addEventListener("change", (event) => {
-    booking.date = event.target.value;
+
+  const dateInput = document.querySelector("#booking-date");
+  const dateError = document.querySelector("#error-booking-date");
+  dateInput.addEventListener("change", (event) => {
+    const val = event.target.value;
+    const today = todayKey();
+    if (!val) {
+      dateError.textContent = "Please select an appointment date.";
+      dateError.classList.add("visible");
+      dateInput.classList.add("has-error");
+      return;
+    }
+    if (val < today) {
+      dateError.textContent = "Past dates cannot be selected. Please choose today or a future date.";
+      dateError.classList.add("visible");
+      dateInput.classList.add("has-error");
+      const list = document.querySelector("#slot-list");
+      if (list) list.innerHTML = '<span class="empty-slots">Past dates are not available. Please choose an upcoming date.</span>';
+      return;
+    }
+    dateError.textContent = "";
+    dateError.classList.remove("visible");
+    dateInput.classList.remove("has-error");
+    booking.date = val;
     loadAvailability();
   });
-  if (booking.serviceId && booking.stylistId && booking.date) loadAvailability();
+
+  if (booking.serviceId && booking.date) loadAvailability();
 }
 
 async function loadAvailability() {
   const requestNumber = ++slotRequest;
   const list = document.querySelector("#slot-list");
   if (!list) return;
-  if (!booking.serviceId || !booking.stylistId || !booking.date) {
-    list.innerHTML = '<span class="empty-slots">Choose a service, stylist and date to see available times.</span>';
+  if (!booking.serviceId) {
+    list.innerHTML = '<span class="empty-slots">Please select a service first.</span>';
+    return;
+  }
+  if (!booking.date) {
+    list.innerHTML = '<span class="empty-slots">Please select a valid date.</span>';
+    return;
+  }
+  if (booking.date < todayKey()) {
+    list.innerHTML = '<span class="empty-slots">Past dates cannot be booked. Please choose today or later.</span>';
     return;
   }
   if (serviceById(booking.serviceId)?.requiresConsultation) {
@@ -178,9 +233,9 @@ async function loadAvailability() {
   }
   list.innerHTML = '<span class="empty-slots">Finding a little time for you…</span>';
   try {
-    const query = new URLSearchParams({ date: booking.date, serviceId: booking.serviceId, stylistId: booking.stylistId });
+    const query = new URLSearchParams({ date: booking.date, serviceId: booking.serviceId, stylistId: booking.stylistId || "any" });
     let slots;
-    if (booking.stylistId === "any") {
+    if (!booking.stylistId || booking.stylistId === "any") {
       const results = await Promise.all(stylists.filter((stylist) => stylist.serviceIds?.includes(booking.serviceId)).map(async (stylist) => ({
         stylistId: stylist.id,
         slots: await api(`/api/availability?${new URLSearchParams({ date: booking.date, serviceId: booking.serviceId, stylistId: stylist.id })}`)
@@ -194,7 +249,7 @@ async function loadAvailability() {
     list.innerHTML = slots.length
       ? slots.slice(0, 18).map((slot) => `<button class="slot-button" type="button" data-slot="${escapeHtml(slot.startAt)}" data-stylist="${escapeHtml(slot.stylistId)}">${formatTime(slot.startAt)}</button>`).join("")
       : '<span class="empty-slots">No openings on this day. Try another date and we’ll find you a good one.</span>';
-    if (booking.stylistId === "any" && slots.length) {
+    if ((!booking.stylistId || booking.stylistId === "any") && slots.length) {
       document.querySelectorAll(".slot-button").forEach((button) => {
         const stylist = stylistById(button.dataset.stylist);
         button.title = stylist ? `With ${stylist.name}` : "";
@@ -213,20 +268,77 @@ function showClientForm(error = "") {
   const stylist = stylistById(booking.stylistId);
   bookingContent.innerHTML = `
     <h2 id="booking-heading">Almost <em>there.</em></h2>
-    <p class="booking-subtitle">Let us know who to look out for. We’ll keep your time aside for five minutes.</p>
-    <div class="booking-summary"><strong>${escapeHtml(service.name)}</strong> · ${formatServicePrice(service)} · ${service.durationMinutes} min<br>${escapeHtml(stylist.name)} · ${escapeHtml(formatLongDate(booking.date))} at ${formatTime(booking.startAt)}<br><span>Your time is held for five minutes.</span></div>
+    <p class="booking-subtitle">Let us know who to look out for. We’ll keep your chair held for five minutes.</p>
+    <div class="booking-summary">
+      <strong>${escapeHtml(service ? service.name : "Selected Service")}</strong> · ${service ? formatServicePrice(service) : ""} · ${service ? service.durationMinutes : 0} min<br>
+      ${escapeHtml(stylist ? stylist.name : "First Available Stylist")} · ${escapeHtml(formatLongDate(booking.date))} at ${formatTime(booking.startAt)}<br>
+      <span>Temporary slot hold active for 5 minutes.</span>
+    </div>
     <form id="client-form" novalidate>
-      <div class="booking-field"><label class="booking-label" for="client-name">YOUR NAME</label><input class="booking-input" id="client-name" name="name" autocomplete="name" required minlength="2" maxlength="100" placeholder="How should we greet you?"></div>
+      <div class="booking-field">
+        <label class="booking-label" for="client-name">YOUR NAME *</label>
+        <input class="booking-input" id="client-name" name="name" autocomplete="name" required minlength="2" maxlength="100" placeholder="e.g. Maya Lin" value="${escapeHtml(clientState.name)}">
+        <span class="field-error" id="error-client-name" role="alert"></span>
+      </div>
       <div class="booking-fields-row">
-        <div class="booking-field"><label class="booking-label" for="client-email">EMAIL</label><input class="booking-input" id="client-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></div>
-        <div class="booking-field"><label class="booking-label" for="client-phone">PHONE</label><input class="booking-input" id="client-phone" name="phone" type="tel" autocomplete="tel" required pattern="[+()0-9 .-]{7,25}" placeholder="(555) 555-0123"></div>
+        <div class="booking-field">
+          <label class="booking-label" for="client-email">EMAIL ADDRESS *</label>
+          <input class="booking-input" id="client-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="name@example.com" value="${escapeHtml(clientState.email)}">
+          <span class="field-error" id="error-client-email" role="alert"></span>
+        </div>
+        <div class="booking-field">
+          <label class="booking-label" for="client-phone">PHONE NUMBER *</label>
+          <input class="booking-input" id="client-phone" name="phone" type="tel" autocomplete="tel" required pattern="[+()0-9 .-]{7,25}" placeholder="(718) 555-0199" value="${escapeHtml(clientState.phone)}">
+          <span class="field-error" id="error-client-phone" role="alert"></span>
+        </div>
       </div>
       <p class="policy-note">To keep your chair just for you, please give us 24 hours’ notice if your plans change. Late cancellations and missed appointments may be charged. We’ll confirm the details before any payment is collected.</p>
-      <label class="policy-check"><input name="acceptedPolicy" type="checkbox" required><span>I’ve read and agree to the booking and cancellation policy.</span></label>
+      <div class="booking-field">
+        <label class="policy-check" id="policy-container"><input id="client-policy" name="acceptedPolicy" type="checkbox" required ${clientState.acceptedPolicy ? "checked" : ""}><span>I’ve read and agree to the 24-hour booking and cancellation policy. *</span></label>
+        <span class="field-error" id="error-client-policy" role="alert"></span>
+      </div>
       <p class="form-error" role="alert">${escapeHtml(error)}</p>
-      <div class="booking-actions"><button class="button button-outline" type="button" id="booking-back">Back</button><button class="button button-dark" type="submit">Confirm my visit</button></div>
+      <div class="booking-actions">
+        <button class="button button-outline" type="button" id="booking-back">Back</button>
+        <button class="button button-dark" type="submit">Confirm my visit</button>
+      </div>
     </form>
   `;
+
+  const nameInput = document.querySelector("#client-name");
+  const emailInput = document.querySelector("#client-email");
+  const phoneInput = document.querySelector("#client-phone");
+  const policyInput = document.querySelector("#client-policy");
+
+  nameInput.addEventListener("input", (e) => {
+    clientState.name = e.target.value;
+    if (clientState.name.trim().length >= 2) {
+      nameInput.classList.remove("has-error");
+      document.querySelector("#error-client-name").classList.remove("visible");
+    }
+  });
+  emailInput.addEventListener("input", (e) => {
+    clientState.email = e.target.value;
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientState.email.trim())) {
+      emailInput.classList.remove("has-error");
+      document.querySelector("#error-client-email").classList.remove("visible");
+    }
+  });
+  phoneInput.addEventListener("input", (e) => {
+    clientState.phone = e.target.value;
+    if (/^[+()\d\s.-]{7,25}$/.test(clientState.phone.trim())) {
+      phoneInput.classList.remove("has-error");
+      document.querySelector("#error-client-phone").classList.remove("visible");
+    }
+  });
+  policyInput.addEventListener("change", (e) => {
+    clientState.acceptedPolicy = e.target.checked;
+    if (clientState.acceptedPolicy) {
+      document.querySelector("#policy-container").classList.remove("has-error");
+      document.querySelector("#error-client-policy").classList.remove("visible");
+    }
+  });
+
   document.querySelector("#booking-back").addEventListener("click", () => renderStepOne());
   document.querySelector("#client-form").addEventListener("submit", submitBooking);
 }
@@ -237,13 +349,84 @@ async function submitBooking(event) {
   const errorBox = form.querySelector(".form-error");
   const button = form.querySelector('[type="submit"]');
   const formData = new FormData(form);
-  const name = String(formData.get("name")).trim();
-  const email = String(formData.get("email")).trim();
-  const phone = String(formData.get("phone")).trim();
-  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !/^[+()\d\s.-]{7,25}$/.test(phone) || !formData.get("acceptedPolicy")) {
-    errorBox.textContent = "Please enter your name, a valid email and phone, and accept the booking policy.";
+  const name = String(formData.get("name") || "").trim();
+  const email = String(formData.get("email") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+  const acceptedPolicy = Boolean(formData.get("acceptedPolicy"));
+
+  // Preserve user entries on validation failure
+  clientState.name = name;
+  clientState.email = email;
+  clientState.phone = phone;
+  clientState.acceptedPolicy = acceptedPolicy;
+
+  let hasValidationError = false;
+  let firstInvalidEl = null;
+
+  const nameEl = document.querySelector("#client-name");
+  const nameErr = document.querySelector("#error-client-name");
+  if (name.length < 2) {
+    nameEl.classList.add("has-error");
+    nameEl.setAttribute("aria-invalid", "true");
+    nameErr.textContent = "Please enter your full name (minimum 2 characters).";
+    nameErr.classList.add("visible");
+    hasValidationError = true;
+    if (!firstInvalidEl) firstInvalidEl = nameEl;
+  } else {
+    nameEl.classList.remove("has-error");
+    nameEl.removeAttribute("aria-invalid");
+    nameErr.classList.remove("visible");
+  }
+
+  const emailEl = document.querySelector("#client-email");
+  const emailErr = document.querySelector("#error-client-email");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailEl.classList.add("has-error");
+    emailEl.setAttribute("aria-invalid", "true");
+    emailErr.textContent = "Please enter a valid email address (e.g. name@example.com).";
+    emailErr.classList.add("visible");
+    hasValidationError = true;
+    if (!firstInvalidEl) firstInvalidEl = emailEl;
+  } else {
+    emailEl.classList.remove("has-error");
+    emailEl.removeAttribute("aria-invalid");
+    emailErr.classList.remove("visible");
+  }
+
+  const phoneEl = document.querySelector("#client-phone");
+  const phoneErr = document.querySelector("#error-client-phone");
+  if (!/^[+()\d\s.-]{7,25}$/.test(phone)) {
+    phoneEl.classList.add("has-error");
+    phoneEl.setAttribute("aria-invalid", "true");
+    phoneErr.textContent = "Please enter a valid telephone number (at least 7 digits).";
+    phoneErr.classList.add("visible");
+    hasValidationError = true;
+    if (!firstInvalidEl) firstInvalidEl = phoneEl;
+  } else {
+    phoneEl.classList.remove("has-error");
+    phoneEl.removeAttribute("aria-invalid");
+    phoneErr.classList.remove("visible");
+  }
+
+  const policyContainer = document.querySelector("#policy-container");
+  const policyErr = document.querySelector("#error-client-policy");
+  if (!acceptedPolicy) {
+    policyContainer.classList.add("has-error");
+    policyErr.textContent = "You must acknowledge and agree to the 24-hour cancellation policy.";
+    policyErr.classList.add("visible");
+    hasValidationError = true;
+    if (!firstInvalidEl) firstInvalidEl = document.querySelector("#client-policy");
+  } else {
+    policyContainer.classList.remove("has-error");
+    policyErr.classList.remove("visible");
+  }
+
+  if (hasValidationError) {
+    errorBox.textContent = "Please resolve the highlighted field errors above.";
+    if (firstInvalidEl) firstInvalidEl.focus();
     return;
   }
+
   button.disabled = true;
   button.textContent = "Saving your chair…";
   try {
@@ -253,15 +436,24 @@ async function submitBooking(event) {
     });
     const service = serviceById(booking.serviceId);
     bookingContent.innerHTML = `
+      <div class="demo-mode-tag">Demo Mode · Local Prototype Store</div>
       <div class="success-mark" aria-hidden="true">✳</div>
       <h2 id="booking-heading">It’s a <em>date.</em></h2>
-      <p class="booking-subtitle">Your chair is saved. We can’t wait to see you.</p>
-      <div class="booking-summary"><strong>${escapeHtml(confirmed.service)}</strong><br>${escapeHtml(confirmed.stylist)} · ${escapeHtml(formatLongDate(booking.date))} at ${formatTime(confirmed.startAt)}<br>${formatServicePrice(service)} · Confirmation ${escapeHtml(confirmed.id.slice(0, 8).toUpperCase())}</div>
-      <p class="booking-subtitle">We’ve saved your booking. For this demo, confirmations are shown here only—connect an email or SMS provider to send a message.</p>
+      <p class="booking-subtitle">Your appointment has been registered in the salon’s local storage database.</p>
+      <div class="booking-summary">
+        <strong>${escapeHtml(confirmed.service)}</strong><br>
+        ${escapeHtml(confirmed.stylist)} · ${escapeHtml(formatLongDate(booking.date))} at ${formatTime(confirmed.startAt)}<br>
+        ${formatServicePrice(service)} · Confirmation Reference <strong>#LUM-${escapeHtml(confirmed.id.slice(0, 8).toUpperCase())}</strong>
+      </div>
+      <p class="policy-note"><strong>Demo Environment Notice:</strong> This appointment is stored locally in <code>data/store.json</code> for staff review. Because this demonstration starter does not integrate live external SMS/Email or card payment gateways, no automated text or email message was dispatched. Please present your confirmation reference at the salon upon arrival.</p>
       <button class="button button-dark" type="button" id="booking-done">Lovely, see you there</button>
     `;
     document.querySelector("#booking-done").addEventListener("click", () => dialog.close());
     booking.holdId = "";
+    clientState.name = "";
+    clientState.email = "";
+    clientState.phone = "";
+    clientState.acceptedPolicy = false;
   } catch (error) {
     if (error.code === "CONSULTATION_REQUIRED") {
       errorBox.textContent = `${error.message} `;
@@ -282,7 +474,9 @@ async function submitBooking(event) {
     errorBox.textContent = error.message;
     button.disabled = false;
     button.textContent = "Try again";
-    if (error.message.includes("hold expired")) renderStepOne(error.message);
+    if (error.message.includes("hold expired") || error.message.includes("expired")) {
+      renderStepOne("Reservation hold expired. The slot was released—please select an available time.");
+    }
   }
 }
 
@@ -363,6 +557,19 @@ async function initialise() {
     renderStylists();
     renderHours();
     setupScrollAnimations();
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("openBooking")) {
+      openBooking({ serviceId: "signature-cut" });
+    } else if (urlParams.has("testValidation")) {
+      booking.serviceId = "signature-cut";
+      booking.stylistId = "maya";
+      booking.date = todayKey();
+      booking.startAt = new Date().toISOString();
+      showClientForm();
+      dialog.showModal();
+      const form = document.querySelector("#client-form");
+      if (form) form.dispatchEvent(new Event("submit", { cancelable: true }));
+    }
   } catch (error) {
     showToast(`The studio details could not load: ${error.message}`);
   }

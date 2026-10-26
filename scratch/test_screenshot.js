@@ -40,3 +40,48 @@ const res2 = spawnSync(chromePath, [
 
 console.log('Mobile res:', res2.status, res2.stdout.toString(), res2.stderr.toString());
 console.log('Mobile exists:', fs.existsSync(mobilePng));
+
+const modalPng = path.join(targetDir, 'booking_modal_step1.png');
+console.log('Capturing Booking Modal Step 1...');
+spawnSync(chromePath, [
+  '--headless',
+  '--disable-gpu',
+  '--no-sandbox',
+  '--force-device-scale-factor=1',
+  '--hide-scrollbars',
+  `--screenshot=${modalPng}`,
+  '--window-size=1280,1000',
+  '--virtual-time-budget=4000',
+  'http://localhost:3000/?openBooking=1'
+], { stdio: 'pipe' });
+console.log('Modal exists:', fs.existsSync(modalPng));
+
+const validationPng = path.join(targetDir, 'booking_validation_errors.png');
+console.log('Capturing Validation Errors (Desktop)...');
+spawnSync(chromePath, [
+  '--headless',
+  '--disable-gpu',
+  '--no-sandbox',
+  '--force-device-scale-factor=1',
+  '--hide-scrollbars',
+  `--screenshot=${validationPng}`,
+  '--window-size=1280,1000',
+  '--virtual-time-budget=4000',
+  'http://localhost:3000/?testValidation=1'
+], { stdio: 'pipe' });
+console.log('Validation Desktop exists:', fs.existsSync(validationPng));
+
+const validationMobPng = path.join(targetDir, 'booking_validation_mobile.png');
+console.log('Capturing Validation Errors (Mobile 375px)...');
+spawnSync(chromePath, [
+  '--headless',
+  '--disable-gpu',
+  '--no-sandbox',
+  '--force-device-scale-factor=1',
+  '--hide-scrollbars',
+  `--screenshot=${validationMobPng}`,
+  '--window-size=375,812',
+  '--virtual-time-budget=4000',
+  'http://localhost:3000/?testValidation=1'
+], { stdio: 'pipe' });
+console.log('Validation Mobile exists:', fs.existsSync(validationMobPng));

@@ -597,6 +597,11 @@ h1, h2, h3, h4, p { margin-top: 0; }
 .form-error { min-height: 1em; margin: 8px 0 0; color: var(--error); font-size: 14px; line-height: 1.6; }
 .form-error:empty { margin: 0; }
 .form-error .service-book { margin: 10px 0 0; }
+.field-error { display: none; margin-top: 6px; color: var(--error); font-size: 13px; font-weight: 500; line-height: 1.4; }
+.field-error.visible { display: block; }
+.booking-input.has-error, .booking-select.has-error { border-color: var(--error); background-color: #fff9f8; outline: 1px solid var(--error); }
+.policy-check.has-error { color: var(--error); }
+.demo-mode-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; margin-bottom: 12px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--olive-dark); background: var(--olive-soft); border: 1px solid rgba(107, 117, 82, .3); }
 
 /* Toast */
 .toast { position: fixed; z-index: 10; left: 50%; bottom: 30px; max-width: calc(100% - 32px); padding: 13px 22px; border-radius: var(--radius-pill); color: var(--on-dark); background: var(--ink); opacity: 0; transform: translate(-50%, 16px); transition: opacity .2s, transform .2s; pointer-events: none; font-size: 14px; }

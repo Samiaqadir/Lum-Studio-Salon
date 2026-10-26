@@ -43,6 +43,10 @@
 | **QA-REQ-06** | Phone Format Validation | Enter invalid phone number; attempt submission. | Field requires valid phone formatting; prevents empty submission. | **PASS** |
 | **QA-REQ-07** | Mandatory Policy Acceptance | Fill all fields but leave "I understand the 24-hour cancellation policy" unchecked. | Checkbox highlights with browser validation prompt; form cannot be finalized without checking. | **PASS** |
 | **QA-REQ-08** | Balayage Consultation Prerequisite | Select "Dimensional Balayage & Gloss" with unchecked consultation box. | Server rejects booking with 400 Bad Request: "Balayage requires a completed colour consultation". Inline alert advises booking a free consultation first. | **PASS** |
+| **QA-REQ-09** | Reject Past Dates | Manually pick or input a date prior to today. | Date input rejects date; displays inline field error: "Past dates cannot be selected"; slot calculation is blocked. | **PASS** |
+| **QA-REQ-10** | Field-Level Error Indicators | Submit client form with invalid name, email, or phone. | Each invalid field displays distinct field-level error text below input with red outline and `aria-invalid="true"`. | **PASS** |
+| **QA-REQ-11** | Preserve Entries on Failure | Enter valid name and phone, but leave email invalid; click Confirm. | Form validation highlights email error, but pre-filled Name and Phone values remain intact without clearing. | **PASS** |
+| **QA-REQ-12** | Mock / Demo Environment Clarity | Complete a valid reservation and inspect confirmation view. | UI renders "Demo Mode · Local Prototype Store" badge and explicitly informs client that appointment is stored locally without claiming external SMS/email dispatch. | **PASS** |
 
 ---
 
