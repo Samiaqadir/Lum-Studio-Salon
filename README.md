@@ -1,43 +1,122 @@
-# Luma Studio
+# Luma Hair Studio — Salon Website & QA Suite
 
-A mobile-first salon website with a working appointment booking flow and a password-protected staff dashboard. Built on Node.js 20+ with no external runtime dependencies.
+A responsive, high-aesthetic salon web application and appointment booking system with an integrated staff administrative dashboard, automated QA test runner, and social planner specification. Built with modern Vanilla HTML, CSS, JavaScript, and Node.js 20+ with zero external runtime dependencies.
 
-## Run locally
+---
 
+## 🚀 Quick Start (Verified from Clean Clone)
+
+### Prerequisites
+* **Node.js**: Version 20.0.0 or later (`node -v`)
+* **npm**: Version 9.0.0 or later (`npm -v`)
+
+### 1. Start the Application
+
+**Windows (PowerShell):**
 ```powershell
-$env:SALON_ADMIN_KEY = "use-a-long-private-key"
+$env:SALON_ADMIN_KEY = "luma-secure-admin-pass"
 npm start
 ```
 
-Open `http://localhost:3000` for the salon website and `/admin` for the staff dashboard. Bookings are stored in `data/store.json`, created on the first run. Set `PORT` to choose a different port.
+**macOS / Linux:**
+```bash
+SALON_ADMIN_KEY="luma-secure-admin-pass" npm start
+```
 
-Run the automated backend tests with `npm test`.
+Open your browser to:
+* **Salon Website:** [http://localhost:3000](http://localhost:3000)
+* **Staff Portal:** [http://localhost:3000/admin](http://localhost:3000/admin) (Log in with the `SALON_ADMIN_KEY` defined above)
 
-## What's included
+Appointments and holds are persisted to `data/store.json`, automatically seeded on first launch.
 
-- Responsive salon homepage with a four-photo hero collage and four-image studio gallery, a searchable-by-browser HTML service menu, staff profiles, a studio approach, location, and hours.
-- Booking flow for service, qualified stylist (or first available), date, computed live availability, client details, and acceptance of the cancellation policy.
-- Complimentary colour consultations and server-enforced consultation completion before first-time balayage bookings.
-- Five-minute slot holds and serialized, overlap-checked booking writes to prevent double-booking on a single running server.
-- Persistent appointments and per-booking policy acceptance timestamps.
-- Staff dashboard, available at `/admin` and linked in the footer, secured by `SALON_ADMIN_KEY`, with appointment list and status updates.
-- Input validation, bounded request bodies, safe static file paths, and useful API errors.
+### 2. Run Test Suites
+```bash
+# Core Node.js native test runner (5/5 suites)
+npm test
 
-## API
+# Full 25-scenario comprehensive QA runner
+node scratch/run_full_qa.js
+```
 
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/salon` | Salon contact information and opening hours |
-| GET | `/api/services` | Service catalogue, duration, and price |
-| GET | `/api/stylists` | Stylist profiles |
-| GET | `/api/availability?date=YYYY-MM-DD&serviceId=…&stylistId=…` | Compute available local appointment starts |
-| POST | `/api/holds` | Temporarily reserve a valid slot |
-| POST | `/api/bookings` | Confirm a held slot with client details and policy acceptance |
-| GET | `/api/admin/bookings` | List bookings (`Authorization: Bearer <SALON_ADMIN_KEY>`) |
-| PATCH | `/api/admin/bookings/:id/status` | Update appointment status (admin key required) |
+---
 
-## Production integrations
+## 📐 Project Structure & Documentation
 
-This starter deliberately does not collect or process card details, send real email/SMS messages, or claim to send confirmation messages. Connect a payment provider and messaging service before enabling deposits, card-on-file rules, or automated reminders. Configure the salon's own name, service catalogue, staff, location, hours, cancellation policy, and timezone before launch.
+* **[SCOPE.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/SCOPE.md)**: Comprehensive one-page scope document covering target audience, pages, services, staff, booking fields, confirmation behavior, out-of-scope items, the full visual user flow diagram, and the Social Planner feature specification.
+* **[QA_CHECKLIST.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/QA_CHECKLIST.md)**: Standardized Quality Assurance Checklist with individual test IDs and expected results across Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, and Broken Links.
+* **`screenshots/`**: Visual evidence captured across standard desktop and mobile resolutions:
+  * `desktop_preview_1280.png` (1280px wide viewport)
+  * `mobile_preview_375.png` (375px wide viewport)
 
-The JSON store and in-process write queue suit a local demo or a single Node.js instance. A multi-instance deployment needs a transactional database and a cross-process exclusion/locking strategy for slot holds and overlapping appointments. Use HTTPS, a unique secret for `SALON_ADMIN_KEY`, and a secure deployment environment for any production use.
+```text
+├── SCOPE.md                  # Task 1 & Task 4: Salon Scope & Social Planner Specifications
+├── QA_CHECKLIST.md           # Task 3: Comprehensive QA Checklist with IDs & Expected Results
+├── README.md                 # Project instructions, architecture, and verification
+├── server.js                 # Zero-dependency HTTP server, static file router & JSON API
+├── package.json              # Project scripts and node engine constraints
+├── data/
+│   ├── default-store.json    # Initial seed data (salon info, services, stylists)
+│   └── store.json            # Persistent appointment & hold storage
+├── public/
+│   ├── index.html            # Main salon single-page website
+│   ├── styles.css            # Responsive styles, design tokens & animations
+│   ├── app.js                # Interactive client SPA logic & booking modal controller
+│   ├── admin.html            # Staff dashboard interface
+│   ├── admin.css             # Administrative styles
+│   └── admin.js              # Admin dashboard data fetching and status updates
+├── screenshots/
+│   ├── desktop_preview_1280.png # 1280px wide desktop preview
+│   └── mobile_preview_375.png  # 375px mobile viewport preview
+├── test/
+│   └── server.test.js        # Automated backend integration tests
+└── scratch/
+    ├── run_full_qa.js        # 25-scenario automated QA test suite
+    └── test_screenshot.js    # Chrome headless multi-width screenshot generator
+```
+
+---
+
+## ✨ Features & Architecture Highlights
+
+### 1. Responsive Salon Experience (Desktop & Mobile)
+* **Top Utility Bar:** Direct telephone link, Brooklyn address, opening hours, and social media links.
+* **Accessible Header & Navigation:** Skip-to-content accessibility link (`.skip-link`), custom wordmark branding, smooth anchor links (`#home`, `#services`, `#team`, `#studio`, `#visit`), and a mobile hamburger drawer with keyboard trap management.
+* **Hero Banner:** Atmospheric visual styling, rotating dynamic value propositions ("like you.", "effortless.", "radiant.", "alive."), social proof review badges (4.9/5 from 180+ reviews), and dual call-to-action buttons.
+* **Curated Service Menu:** Upfront pricing, clear durations, categorized cards (Haircuts, Colour & Lightening, Treatments), and direct 1-click pre-selection for the booking modal.
+* **Team & Staff Roster:** Stylist bio cards, specialty tags (Senior Colorist, Texture Specialist), and direct book-with-stylist links.
+* **Studio Gallery & Philosophy:** Natural light atelier photography and client testimonials.
+* **Mobile Floating Booking Bar:** Sticky bottom action bar on mobile screens ensuring frictionless 1-tap booking access.
+
+### 2. High-Integrity Appointment Engine
+* **5-Minute Slot Holds (`POST /api/holds`):** When a user selects an available time slot, an exclusive 5-minute hold is acquired. Conflicting holds return an instant HTTP 409 Conflict to eliminate double-booking race conditions.
+* **Balayage Prerequisite Safety Rule:** The booking engine verifies that clients booking a "Dimensional Balayage & Gloss" have completed a preliminary colour consultation, protecting hair health and scheduling accuracy.
+* **Serialized Write Queue:** File writes to `data/store.json` are queued sequentially to prevent concurrency hazards.
+
+### 3. Staff Dashboard (`/admin`)
+* Accessible at `/admin` and secured via HTTP Bearer token (`SALON_ADMIN_KEY`).
+* Inspect all booked appointments, view client contact details, filter by date/stylist, and transition appointment states (`confirmed` → `checked-in` → `completed` → `cancelled`).
+
+---
+
+## 📡 REST API Reference
+
+| Method | Endpoint | Description | Auth Required? |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/salon` | Returns salon contact info, hours, and address | No |
+| `GET` | `/api/services` | Returns categorized service catalogue with pricing and durations | No |
+| `GET` | `/api/stylists` | Returns list of staff profiles and specialties | No |
+| `GET` | `/api/availability` | Computes available start slots for date, service, and stylist | No |
+| `POST` | `/api/holds` | Acquires a temporary 5-minute exclusive hold on a slot | No |
+| `POST` | `/api/bookings` | Finalizes hold with client details and policy acceptance | No |
+| `GET` | `/api/admin/bookings` | Lists all salon appointments | Yes (`Bearer <KEY>`) |
+| `PATCH` | `/api/admin/bookings/:id/status` | Updates appointment status (`checked-in`, `completed`, etc.) | Yes (`Bearer <KEY>`) |
+| `POST` | `/api/admin/services` | Creates a new service in the salon catalogue | Yes (`Bearer <KEY>`) |
+
+---
+
+## 📋 Social Planner Scope (Task 4)
+* **Calendar View:** Monthly and weekly grid layout showing scheduled salon content with visual status chips.
+* **Post Composer:** Caption editor with live character counters (Instagram, Facebook, Pinterest), hashtag libraries, and media preview.
+* **Platform Selector:** Multi-network targeting for Instagram Feed/Stories, Facebook, Pinterest, and Google Business Profile.
+* **Status Engine:** Transition posts between `Draft` and `Scheduled`.
+* **API Boundary Notice:** Direct third-party automated publishing (Meta Graph API / TikTok API) is explicitly scheduled for Phase 2 future work pending platform app authorization.

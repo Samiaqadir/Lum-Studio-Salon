@@ -1,0 +1,132 @@
+{
+  "total": 25,
+  "passed": 25,
+  "failed": 0,
+  "suites": [
+    {
+      "name": "1. Core Web Serving & Security Headers",
+      "tests": [
+        {
+          "name": "Home page (/) serves 200 with HTML, viewport meta, and skip link",
+          "status": "PASS"
+        },
+        {
+          "name": "Security headers are enforced on static and HTML responses",
+          "status": "PASS"
+        },
+        {
+          "name": "Staff portal route (/admin) resolves to admin dashboard page",
+          "status": "PASS"
+        },
+        {
+          "name": "Path traversal attacks return 400 or 404 without file leakage",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "2. Public Catalog & Availability API",
+      "tests": [
+        {
+          "name": "GET /api/salon returns studio hours, address, phone and email",
+          "status": "PASS"
+        },
+        {
+          "name": "GET /api/services returns full categorized catalog with pricing & duration",
+          "status": "PASS"
+        },
+        {
+          "name": "GET /api/stylists returns staff roster and assigned services",
+          "status": "PASS"
+        },
+        {
+          "name": "GET /api/availability calculates valid bookable time slots",
+          "status": "PASS"
+        },
+        {
+          "name": "GET /api/availability returns empty list for Sunday / closed days",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "3. Slot Holds, Concurrency & Booking Integrity",
+      "tests": [
+        {
+          "name": "POST /api/holds grants an exclusive 5-minute reservation hold",
+          "status": "PASS"
+        },
+        {
+          "name": "Race condition prevention: Competing holds on the same slot trigger 409 Conflict",
+          "status": "PASS"
+        },
+        {
+          "name": "Booking requires explicit policy acceptance (cancellation & terms)",
+          "status": "PASS"
+        },
+        {
+          "name": "Valid booking completes successfully, sets status to confirmed, and saves record",
+          "status": "PASS"
+        },
+        {
+          "name": "Prerequisite check: Balayage rejects bookings without completed colour consultation",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "4. Admin Authentication, Security & CRUD Management",
+      "tests": [
+        {
+          "name": "Admin endpoints reject unauthenticated access with 401",
+          "status": "PASS"
+        },
+        {
+          "name": "Admin endpoints reject invalid bearer tokens with 401",
+          "status": "PASS"
+        },
+        {
+          "name": "Admin endpoint accepts valid key and lists all appointments",
+          "status": "PASS"
+        },
+        {
+          "name": "Admin can transition appointment status (e.g. to checked-in, completed)",
+          "status": "PASS"
+        },
+        {
+          "name": "Admin can create new services with auto-assignment to all stylists",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "5. Frontend Design, Card Alignment & Accessibility QA",
+      "tests": [
+        {
+          "name": "styles.css enforces equal card heights with flex: 1 1 0% on .service-card",
+          "status": "PASS"
+        },
+        {
+          "name": "styles.css aligns action buttons and duration badges to bottom baseline with margin-top: auto",
+          "status": "PASS"
+        },
+        {
+          "name": "styles.css sets white-space: nowrap on .service-book to avoid awkward line wrapping",
+          "status": "PASS"
+        },
+        {
+          "name": "index.html contains proper semantic structure (main, header, nav, section, footer, dialog)",
+          "status": "PASS"
+        },
+        {
+          "name": "index.html has valid aria labels and accessibility attributes",
+          "status": "PASS"
+        },
+        {
+          "name": "admin.html input fields have corresponding label elements with matching for/id",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}

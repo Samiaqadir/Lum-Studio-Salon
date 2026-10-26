@@ -434,9 +434,11 @@ function createSalonServer(options = {}) {
     } catch {
       return sendJson(response, 400, { error: "Invalid path." });
     }
-    let filePath = path.resolve(PUBLIC_DIR, `.${decodedPath}`);
-    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
-      filePath = path.resolve(__dirname, `.${decodedPath}`);
+    const cleanPath = path.normalize(decodedPath).replace(/^[\\\/]+/, "");
+    const filePath = path.resolve(PUBLIC_DIR, cleanPath);
+    const relative = path.relative(PUBLIC_DIR, filePath);
+    if (relative.startsWith("..") || path.isAbsolute(relative)) {
+      return sendJson(response, 403, { error: "Access denied." });
     }
     if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
       return sendJson(response, 404, { error: "Not found." });
