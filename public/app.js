@@ -74,6 +74,13 @@ function stylistById(id) {
   return stylists.find((stylist) => stylist.id === id);
 }
 
+function getServiceBadge(service) {
+  if (service.requiresConsultation) return `<span class="service-tag tag-consult">Consultation Included</span>`;
+  if (service.id === "balayage" || service.id === "signature-cut") return `<span class="service-tag tag-popular">Client Favorite</span>`;
+  if (service.id === "gloss-treatment") return `<span class="service-tag tag-ritual">Botanical Ritual</span>`;
+  return "";
+}
+
 function renderServices() {
   const groups = new Map();
   for (const service of services) {
@@ -84,7 +91,8 @@ function renderServices() {
     <div class="service-group">
       <h3><span aria-hidden="true">0${groupIndex + 1}</span> ${escapeHtml(category)}</h3>
       ${items.map((service) => `
-        <article class="service-card">
+        <article class="service-card" data-service-card="${escapeHtml(service.id)}">
+          ${getServiceBadge(service)}
           <div class="service-card-head">
             <h4>${escapeHtml(service.name)}</h4>
             <span class="service-price">${formatServicePrice(service)}</span>
@@ -641,6 +649,9 @@ document.addEventListener("keydown", (event) => {
 });
 
 async function initialise() {
+  setupCustomCursor();
+  setupFloatingBar();
+  setupMagneticButtons();
   setupScrollAnimations();
   setupRotatingHeadline();
   setupHeroParallax();
@@ -784,7 +795,7 @@ function setupScrollAnimations() {
   const selectors = [
     ".hero-centered-content > *", ".intro > *", ".section-heading > *",
     ".service-group", ".services-cta", ".team-intro-copy > *", ".team-feature-image",
-    ".stylist-card", ".gallery-heading > *", ".gallery-grid figure", ".quote-section > *",
+    ".stylist-card", ".testimonial-card", ".press-bar", ".gallery-heading > *", ".gallery-grid figure", ".quote-section > *",
     ".visit-section > *", ".footer-main > *"
   ];
   let index = 0;
@@ -796,4 +807,130 @@ function setupScrollAnimations() {
   }
 }
 
+function setupCustomCursor() {
+  if (window.matchMedia("(pointer: coarse), (hover: none)").matches) return;
+  const cursorEl = document.querySelector("#custom-cursor");
+  if (!cursorEl) return;
+
+  const dot = cursorEl.querySelector(".cursor-dot");
+  const ring = cursorEl.querySelector(".cursor-ring");
+  const text = cursorEl.querySelector(".cursor-text");
+  const glow = cursorEl.querySelector(".cursor-ambient-glow");
+
+  document.documentElement.classList.add("has-custom-cursor");
+
+  let mouseX = -100, mouseY = -100;
+  let ringX = -100, ringY = -100;
+  let isVisible = false;
+
+  window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!isVisible) {
+      isVisible = true;
+      cursorEl.classList.add("is-visible");
+      ringX = mouseX;
+      ringY = mouseY;
+    }
+  });
+
+  window.addEventListener("mouseleave", () => {
+    isVisible = false;
+    cursorEl.classList.remove("is-visible");
+  });
+
+  window.addEventListener("mousedown", (e) => {
+    cursorEl.classList.add("is-clicking");
+    const ripple = document.createElement("div");
+    ripple.className = "cursor-ripple";
+    ripple.style.left = `${e.clientX}px`;
+    ripple.style.top = `${e.clientY}px`;
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 650);
+  });
+
+  window.addEventListener("mouseup", () => {
+    cursorEl.classList.remove("is-clicking");
+  });
+
+  function renderCursor() {
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+
+    dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+    ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+    if (glow) glow.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+    if (text) text.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+
+    requestAnimationFrame(renderCursor);
+  }
+  requestAnimationFrame(renderCursor);
+
+  document.addEventListener("mouseover", (e) => {
+    const target = e.target.closest("button, a, .service-card, .stylist-card, .photo-frame, input, select, textarea, .testimonial-card, .quick-book-pill, .quick-top-btn");
+    if (!target) {
+      cursorEl.className = "custom-cursor is-visible";
+      if (text) text.textContent = "";
+      return;
+    }
+
+    cursorEl.className = "custom-cursor is-visible";
+    if (target.matches("button, a, .button, .service-book, .slot-button, .nav-book, .quick-book-pill, .quick-top-btn")) {
+      cursorEl.classList.add("is-hover-button");
+    } else if (target.matches(".service-card, .testimonial-card, .stylist-card")) {
+      cursorEl.classList.add("is-hover-card");
+    } else if (target.matches(".photo-frame, .gallery-grid figure, .team-feature-image")) {
+      cursorEl.classList.add("is-hover-gallery");
+      if (text) text.textContent = "VIEW";
+    } else if (target.matches("input, select, textarea")) {
+      cursorEl.classList.add("is-hover-input");
+    }
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    const related = e.relatedTarget;
+    if (!related || !related.closest("button, a, .service-card, .stylist-card, .photo-frame, input, select, textarea, .testimonial-card, .quick-book-pill, .quick-top-btn")) {
+      cursorEl.className = "custom-cursor is-visible";
+      if (text) text.textContent = "";
+    }
+  });
+}
+
+function setupFloatingBar() {
+  const bar = document.querySelector("#floating-quick-bar");
+  const topBtn = document.querySelector("#quick-top-btn");
+  if (!bar) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 450) {
+      bar.classList.add("is-visible");
+    } else {
+      bar.classList.remove("is-visible");
+    }
+  }, { passive: true });
+
+  if (topBtn) {
+    topBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+}
+
+function setupMagneticButtons() {
+  if (window.matchMedia("(pointer: coarse), (prefers-reduced-motion: reduce)").matches) return;
+  const items = document.querySelectorAll(".hero-main-cta, .nav-book, .quick-book-pill");
+  items.forEach((btn) => {
+    btn.addEventListener("mousemove", (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate3d(${x * 0.18}px, ${y * 0.18}px, 0)`;
+    });
+    btn.addEventListener("mouseleave", () => {
+      btn.style.transform = "";
+    });
+  });
+}
+
 initialise();
+

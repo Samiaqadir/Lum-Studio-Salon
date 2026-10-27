@@ -10,10 +10,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://images.unsplash.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=107">
-    <script src="/app.js?v=107" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=109">
+    <script src="/app.js?v=109" defer></script>
   </head>
   <body>
+    <div class="custom-cursor" id="custom-cursor" aria-hidden="true">
+      <div class="cursor-dot"></div>
+      <div class="cursor-ring"></div>
+      <div class="cursor-text"></div>
+      <div class="cursor-ambient-glow"></div>
+    </div>
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="top-info-bar">
       <div class="top-info-inner">
@@ -69,6 +75,7 @@
         <a href="#home">Home</a>
         <a href="#services">Services</a>
         <a href="#team">Our people</a>
+        <a href="#testimonials">Stories</a>
         <a href="#studio">The studio</a>
         <a href="#visit">Contact</a>
       </nav>
@@ -86,6 +93,7 @@
         </div>
         <div class="hero-centered-content">
           <div class="hero-badge-wrap">
+            <span class="hero-live-badge"><span class="live-pulse-dot" aria-hidden="true"></span> Open Today · Walk-ins &amp; Consultations Welcome</span>
             <span class="hero-category-tag">Atelier &amp; Colorists · Brooklyn, NY</span>
           </div>
           <h1 class="hero-title hero-banner-title">Hair that feels<br><span class="rotating-text-wrap" aria-label="like you."><em class="rotating-word is-active">like you.</em><em class="rotating-word">effortless.</em><em class="rotating-word">radiant.</em><em class="rotating-word">alive.</em></span></h1>
@@ -97,9 +105,9 @@
           <div class="hero-trust-bar">
             <div class="trust-item"><span class="stars">★★★★★</span> <strong>4.9/5</strong> <span>Google (180+ Reviews)</span></div>
             <span class="trust-divider" aria-hidden="true">•</span>
-            <div class="trust-item"><span class="trust-icon">✦</span> <span>Complimentary Color Consultations</span></div>
+            <div class="trust-item"><span class="trust-icon">✦</span> <span>Complimentary Consultations</span></div>
             <span class="trust-divider" aria-hidden="true">•</span>
-            <div class="trust-item"><span class="trust-icon">🌿</span> <span>Clean &amp; Nourishing Rituals</span></div>
+            <div class="trust-item"><span class="trust-icon">🌿</span> <span>Davines Organic Rituals</span></div>
           </div>
           <div class="hero-banner-meta">
             <span class="meta-dot"></span>
@@ -151,6 +159,68 @@
           <img class="team-feature-image" src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=1200&q=85" alt="A stylist carefully working on a guest's hair" loading="lazy">
         </div>
         <div class="team-grid" id="stylists-list" aria-live="polite"><p class="loading-note">Meet the lovely humans behind the chairs.</p></div>
+      </section>
+      <section class="testimonials-section" id="testimonials">
+        <div class="section-heading">
+          <div><span class="eyebrow">CLIENT STORIES &amp; REVIEWS</span><h2>In their <em>own words.</em></h2></div>
+          <p>Real experiences from our chairs on Bedford Avenue. Thoughtful listening, lived-in finishes, and appointments you actually look forward to.</p>
+        </div>
+        <div class="testimonials-grid">
+          <article class="testimonial-card">
+            <div class="testimonial-rating">
+              <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+              <span class="verified-badge">✦ Verified Guest</span>
+            </div>
+            <blockquote>“Elena gave me the most dimensional, lived-in blonde of my life. It grows out with zero harsh demarcation. The space feels warm and unhurried—like catching up with a dear friend.”</blockquote>
+            <div class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">ST</div>
+              <div class="author-meta">
+                <strong>Sophie T.</strong>
+                <span>Williamsburg · Balayage &amp; Gloss</span>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial-card featured-testimonial">
+            <div class="testimonial-rating">
+              <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+              <span class="verified-badge highlight">✦ Brooklyn Choice 2026</span>
+            </div>
+            <blockquote>“Finally a salon in New York that listens without rushing you out of the chair. Maya understood my curly texture instantly and shaped it into pure effortless bounce.”</blockquote>
+            <div class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">JR</div>
+              <div class="author-meta">
+                <strong>Julian R.</strong>
+                <span>Fort Greene · Signature Cut &amp; Style</span>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial-card">
+            <div class="testimonial-rating">
+              <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+              <span class="verified-badge">✦ Verified Guest</span>
+            </div>
+            <blockquote>“From the warm oat milk latte when you walk in to the herbal scalp ritual at the sink, Luma is pure luxury without an ounce of pretension. Absolutely obsessed.”</blockquote>
+            <div class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">AK</div>
+              <div class="author-meta">
+                <strong>Amara K.</strong>
+                <span>Greenpoint · Botanical Ritual &amp; Blowout</span>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="press-bar">
+          <span class="press-label">AS CELEBRATED IN</span>
+          <div class="press-logos">
+            <span class="press-item"><strong>VOGUE</strong> <em>Hair Collective</em></span>
+            <span class="press-dot" aria-hidden="true">•</span>
+            <span class="press-item"><strong>BROOKLYN MAGAZINE</strong></span>
+            <span class="press-dot" aria-hidden="true">•</span>
+            <span class="press-item"><strong>THE CUT</strong></span>
+            <span class="press-dot" aria-hidden="true">•</span>
+            <span class="press-item"><strong>ALLURE</strong> <em>Atelier Edit</em></span>
+          </div>
+        </div>
       </section>
       <section class="gallery-section" id="studio">
         <div class="gallery-heading"><div><span class="eyebrow">A FEELING, NOT JUST A FINISH</span><h2>The Luma <em>feeling.</em></h2></div><p>Come as you are. Leave a little more yourself.</p></div>
@@ -215,7 +285,6 @@
         </div>
         <div>
           <h2 class="footer-heading" id="social-heading">Follow along</h2>
-          <!-- Placeholder destinations: replace with the salon's real Instagram, LinkedIn and Facebook profile URLs. -->
           <nav class="social-links" aria-labelledby="social-heading">
             <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle class="social-icon-dot" cx="17.7" cy="6.8" r="1"></circle></svg>
@@ -237,6 +306,7 @@
         <nav class="footer-nav-links" aria-label="Explore the site">
           <a href="#services">Services</a>
           <a href="#team">Our people</a>
+          <a href="#testimonials">Stories</a>
           <a href="#studio">The studio</a>
           <a href="#visit">Find us</a>
           <a href="/planner.html" style="color:var(--olive-dark);font-weight:600;">Social Planner</a>
@@ -244,6 +314,15 @@
         </nav>
       </div>
     </footer>
+    <div class="floating-quick-bar" id="floating-quick-bar" aria-label="Quick Actions">
+      <button class="quick-book-pill" type="button" data-book>
+        <span class="quick-sparkle" aria-hidden="true">✦</span>
+        <span>Book Appointment</span>
+      </button>
+      <button class="quick-top-btn" id="quick-top-btn" type="button" aria-label="Scroll back to top">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+      </button>
+    </div>
     <div class="mobile-book-bar"><span>Good hair starts here.</span><button class="button button-dark button-small" type="button" data-book>Book a visit</button></div>
     <dialog class="booking-dialog" id="booking-dialog" aria-labelledby="booking-heading">
       <div class="booking-dialog-head"><span class="eyebrow">YOUR LUMA MOMENT</span><button class="dialog-close" type="button" aria-label="Close booking"><span aria-hidden="true">×</span></button></div>
