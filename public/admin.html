@@ -32,6 +32,7 @@
         </div>
       </a>
       <div class="admin-header-actions">
+        <a class="button button-dark button-small" href="/planner.html" target="_blank">📱 Social Planner Wireframe ↗</a>
         <a class="button button-outline button-small" href="/">← Back to studio</a>
       </div>
     </header>
@@ -110,6 +111,9 @@
           <button class="admin-tab" type="button" data-tab="tab-salon">
             <span class="tab-icon">📍</span> Studio Details
           </button>
+          <button class="admin-tab" type="button" data-tab="tab-planner">
+            <span class="tab-icon">📱</span> Social Planner Wireframe (<span id="count-posts">4</span>)
+          </button>
         </nav>
 
         <!-- Tab 1: Bookings & Calendar -->
@@ -163,6 +167,31 @@
             </div>
           </div>
           <div class="admin-salon-profile" id="admin-salon-profile"></div>
+        </div>
+
+        <!-- Tab 5: Social Planner Wireframe -->
+        <div class="tab-panel" id="tab-planner" hidden>
+          <div class="panel-header">
+            <div>
+              <h2>Social Media Planner &amp; Post Composer (Wireframe)</h2>
+              <p>Editorial calendar, multi-platform post composer, and Draft / Scheduled status pipeline.</p>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <a class="button button-dark button-small" href="/planner.html" target="_blank">Open Fullscreen Wireframe ↗</a>
+            </div>
+          </div>
+          <div class="wireframe-disclaimer-banner" style="margin-bottom:20px;border-radius:12px;border:1px dashed #d4a34b;">
+            <div class="disclaimer-content">
+              <span class="disclaimer-icon">⚠️</span>
+              <div>
+                <span class="disclaimer-badge">Planning Only</span>
+                <strong>Internal Creative Wireframe:</strong> Posts created here are stored locally in <code>data/store.json</code> for staff review. <em>Do not imply real platform publishing.</em> No live social media accounts are connected.
+              </div>
+            </div>
+          </div>
+          <div id="admin-planner-feed" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;">
+            <!-- Social posts rendered here by admin.js -->
+          </div>
         </div>
       </section>
 

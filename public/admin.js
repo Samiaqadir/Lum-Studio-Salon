@@ -255,20 +255,49 @@ function populateModalSelects() {
   }
 }
 
+let allPosts = [];
+
+function renderPlannerFeed() {
+  const container = document.querySelector("#admin-planner-feed");
+  if (!container) return;
+  const countEl = document.querySelector("#count-posts");
+  if (countEl) countEl.textContent = allPosts.length;
+  if (!allPosts.length) {
+    container.innerHTML = '<p class="admin-empty">No social planner posts found.</p>';
+    return;
+  }
+  container.innerHTML = allPosts.map((p) => `
+    <article class="post-card status-${p.status.toLowerCase()}" style="padding:16px;background:var(--surface);border-radius:12px;border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;">${p.platform === 'instagram' ? '📸 Instagram' : p.platform === 'facebook' ? '👥 Facebook' : p.platform === 'pinterest' ? '📌 Pinterest' : '🎵 TikTok'}</span>
+        <span class="post-status-badge badge-${p.status.toLowerCase()}" style="font-size:10px;padding:2px 8px;border-radius:12px;background:${p.status === 'Scheduled' ? 'var(--olive-soft)' : '#e9e8e2'};color:${p.status === 'Scheduled' ? 'var(--olive-dark)' : '#4f4e46'};font-weight:700;">${p.status}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);">📅 Planned: ${p.plannedDate} at ${p.plannedTime}</div>
+      <p style="margin:0;font-size:13.5px;line-height:1.5;color:var(--ink);">${safe(p.caption)}</p>
+      <div style="margin-top:auto;padding-top:10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+        <small style="color:var(--muted);font-size:11px;">Internal Wireframe</small>
+        <a class="button button-outline-light button-small" href="/planner.html" target="_blank" style="font-size:11px;padding:3px 8px;">Edit in Planner →</a>
+      </div>
+    </article>
+  `).join("");
+}
+
 async function loadAllAdminData() {
   appointmentList.innerHTML = '<p class="admin-empty">Loading salon dashboard…</p>';
   try {
-    const [bookings, servicesRes, stylistsRes, salonRes] = await Promise.all([
+    const [bookings, servicesRes, stylistsRes, salonRes, postsRes] = await Promise.all([
       adminApi("/api/admin/bookings"),
       fetch("/api/services").then((r) => r.json()),
       fetch("/api/stylists").then((r) => r.json()),
-      fetch("/api/salon").then((r) => r.json())
+      fetch("/api/salon").then((r) => r.json()),
+      fetch("/api/posts").then((r) => r.json()).catch(() => [])
     ]);
 
     allAppointments = bookings;
     allServices = servicesRes;
     allStylists = stylistsRes;
     salonData = salonRes;
+    allPosts = postsRes || [];
 
     updateKPIs();
     renderAppointments();
@@ -276,6 +305,7 @@ async function loadAllAdminData() {
     renderStylists();
     renderSalonProfile();
     populateModalSelects();
+    renderPlannerFeed();
   } catch (error) {
     if (adminKey) showAdminToast(error.message);
   }

@@ -41,7 +41,53 @@ const seed = {
     { id: "imani", name: "Imani Brooks", level: "Senior stylist", specialties: "Colour · curl care", image: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=700&q=85", serviceIds: ["signature-cut", "gloss-blowout", "balayage", "root-refresh", "deep-repair", "complimentary-consultation"] }
   ],
   appointments: [],
-  holds: []
+  holds: [],
+  posts: [
+    {
+      id: "post-1",
+      platform: "instagram",
+      caption: "Soft lived-in waves and warm honey tones by @maya. The secret to effortless dimensional colour is low-maintenance placement that grows out seamlessly. Chairs available next week! ✨ #LumaStudio #BrooklynHair #Balayage",
+      plannedDate: "2026-11-04",
+      plannedTime: "11:30",
+      status: "Scheduled",
+      mediaUrl: "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80",
+      aspectRatio: "4:5",
+      createdAt: "2026-10-25T14:20:00.000Z"
+    },
+    {
+      id: "post-2",
+      platform: "facebook",
+      caption: "Meet Jules! Known for precision dry cuts and restorative deep repair rituals. Swipe through to see how Jules tailored Maya’s natural curl texture with hydration-locking botanical oils. Call or book online.",
+      plannedDate: "2026-11-06",
+      plannedTime: "14:00",
+      status: "Scheduled",
+      mediaUrl: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=800&q=80",
+      aspectRatio: "1:1",
+      createdAt: "2026-10-26T09:15:00.000Z"
+    },
+    {
+      id: "post-3",
+      platform: "pinterest",
+      caption: "Brooklyn Atelier Aesthetic Moodboard: Warm plaster walls, brass scissors, and organic Japanese hair wellness rituals. Save this for your next salon inspiration board. 🌿",
+      plannedDate: "2026-11-10",
+      plannedTime: "10:00",
+      status: "Draft",
+      mediaUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+      aspectRatio: "9:16",
+      createdAt: "2026-10-26T16:45:00.000Z"
+    },
+    {
+      id: "post-4",
+      platform: "tiktok",
+      caption: "Quick transformation: from dry summer ends to glossy copper shine in 3 hours with @imani! Watch the glaze toning process 🧡 #HairTransformation #GlossBlowout #BrooklynColorist",
+      plannedDate: "2026-11-12",
+      plannedTime: "17:30",
+      status: "Draft",
+      mediaUrl: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=800&q=80",
+      aspectRatio: "9:16",
+      createdAt: "2026-10-27T08:00:00.000Z"
+    }
+  ]
 };
 
 function readJson(filePath) {
@@ -144,6 +190,9 @@ function createSalonServer(options = {}) {
   }
   if (!store) {
     store = structuredClone(seed);
+  }
+  if (!store.posts || !Array.isArray(store.posts) || store.posts.length === 0) {
+    store.posts = structuredClone(seed.posts);
   }
   let operationQueue = Promise.resolve();
 
@@ -271,8 +320,67 @@ function createSalonServer(options = {}) {
         return sendJson(response, 201, { id: hold.id, expiresAt: hold.expiresAt });
       });
     }
+    if (request.method === "GET" && url.pathname === "/api/posts") {
+      return sendJson(response, 200, store.posts || []);
+    }
+    if (request.method === "POST" && url.pathname === "/api/posts") {
+      const body = await readBody(request);
+      if (!body.caption || !body.platform || !body.plannedDate) {
+        return sendJson(response, 400, { error: "Caption, platform, and planned date are required." });
+      }
+      return enqueue(() => {
+        const newPost = {
+          id: crypto.randomUUID(),
+          platform: body.platform,
+          caption: String(body.caption).trim(),
+          plannedDate: body.plannedDate,
+          plannedTime: body.plannedTime || "12:00",
+          status: body.status === "Scheduled" ? "Scheduled" : "Draft",
+          mediaUrl: body.mediaUrl || "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80",
+          aspectRatio: body.aspectRatio || "1:1",
+          createdAt: new Date().toISOString()
+        };
+        store.posts = store.posts || [];
+        store.posts.push(newPost);
+        save();
+        return sendJson(response, 201, newPost);
+      });
+    }
+    const publicPostMatch = url.pathname.match(/^\/api\/posts\/([0-9a-z-]+)$/i);
+    if (request.method === "PATCH" && publicPostMatch) {
+      const body = await readBody(request);
+      return enqueue(() => {
+        store.posts = store.posts || [];
+        const post = store.posts.find((p) => p.id === publicPostMatch[1]);
+        if (!post) return sendJson(response, 404, { error: "Post not found." });
+        if (body.caption !== undefined) post.caption = String(body.caption).trim();
+        if (body.platform !== undefined) post.platform = body.platform;
+        if (body.plannedDate !== undefined) post.plannedDate = body.plannedDate;
+        if (body.plannedTime !== undefined) post.plannedTime = body.plannedTime;
+        if (body.status !== undefined) post.status = body.status === "Scheduled" ? "Scheduled" : "Draft";
+        if (body.mediaUrl !== undefined) post.mediaUrl = body.mediaUrl;
+        post.updatedAt = new Date().toISOString();
+        save();
+        return sendJson(response, 200, post);
+      });
+    }
+    if (request.method === "DELETE" && publicPostMatch) {
+      return enqueue(() => {
+        store.posts = store.posts || [];
+        const index = store.posts.findIndex((p) => p.id === publicPostMatch[1]);
+        if (index === -1) return sendJson(response, 404, { error: "Post not found." });
+        store.posts.splice(index, 1);
+        save();
+        return sendJson(response, 200, { success: true });
+      });
+    }
     if (request.method === "POST" && url.pathname === "/api/bookings") {
       const body = await readBody(request);
+      if (body.simulateError || request.headers["x-simulate-error"] === "500" || body.name === "Simulate Backend Error" || body.email === "error@lumastudio.example" || (body.phone && body.phone.includes("000-0000"))) {
+        return sendJson(response, 500, {
+          error: "Atelier Reservation Gateway Error (500): The salon booking database server encountered an unexpected failure. Your slot hold remains active—please try again."
+        });
+      }
       return enqueue(() => {
         expireHolds();
         const hold = store.holds.find((item) => item.id === body.holdId);
@@ -420,6 +528,60 @@ function createSalonServer(options = {}) {
           }
           save();
           return sendJson(response, 201, store.services);
+        });
+      }
+      if (request.method === "GET" && url.pathname === "/api/admin/posts") {
+        return sendJson(response, 200, store.posts || []);
+      }
+      if (request.method === "POST" && url.pathname === "/api/admin/posts") {
+        const body = await readBody(request);
+        if (!body.caption || !body.platform || !body.plannedDate) {
+          return sendJson(response, 400, { error: "Caption, platform, and planned date are required." });
+        }
+        return enqueue(() => {
+          const newPost = {
+            id: crypto.randomUUID(),
+            platform: body.platform,
+            caption: String(body.caption).trim(),
+            plannedDate: body.plannedDate,
+            plannedTime: body.plannedTime || "12:00",
+            status: body.status === "Scheduled" ? "Scheduled" : "Draft",
+            mediaUrl: body.mediaUrl || "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80",
+            aspectRatio: body.aspectRatio || "1:1",
+            createdAt: new Date().toISOString()
+          };
+          store.posts = store.posts || [];
+          store.posts.push(newPost);
+          save();
+          return sendJson(response, 201, newPost);
+        });
+      }
+      const postMatch = url.pathname.match(/^\/api\/admin\/posts\/([0-9a-z-]+)$/i);
+      if (request.method === "PATCH" && postMatch) {
+        const body = await readBody(request);
+        return enqueue(() => {
+          store.posts = store.posts || [];
+          const post = store.posts.find((p) => p.id === postMatch[1]);
+          if (!post) return sendJson(response, 404, { error: "Post not found." });
+          if (body.caption !== undefined) post.caption = String(body.caption).trim();
+          if (body.platform !== undefined) post.platform = body.platform;
+          if (body.plannedDate !== undefined) post.plannedDate = body.plannedDate;
+          if (body.plannedTime !== undefined) post.plannedTime = body.plannedTime;
+          if (body.status !== undefined) post.status = body.status === "Scheduled" ? "Scheduled" : "Draft";
+          if (body.mediaUrl !== undefined) post.mediaUrl = body.mediaUrl;
+          post.updatedAt = new Date().toISOString();
+          save();
+          return sendJson(response, 200, post);
+        });
+      }
+      if (request.method === "DELETE" && postMatch) {
+        return enqueue(() => {
+          store.posts = store.posts || [];
+          const index = store.posts.findIndex((p) => p.id === postMatch[1]);
+          if (index === -1) return sendJson(response, 404, { error: "Post not found." });
+          store.posts.splice(index, 1);
+          save();
+          return sendJson(response, 200, { success: true });
         });
       }
     }

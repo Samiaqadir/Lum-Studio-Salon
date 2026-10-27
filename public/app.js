@@ -8,6 +8,8 @@ let stylists = [];
 let salon = null;
 let slotRequest = 0;
 let toastTimer;
+let isSubmittingBooking = false;
+let isHoldingSlot = false;
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (character) => ({
@@ -203,6 +205,16 @@ function renderStepOne(error = "") {
     loadAvailability();
   });
 
+  const slotContainer = document.querySelector("#slot-list");
+  slotContainer?.addEventListener("click", () => {
+    if (!booking.serviceId) {
+      serviceSelect.classList.add("has-error");
+      serviceError.textContent = "Please select a service first to see available appointment slots.";
+      serviceError.classList.add("visible");
+      serviceSelect.focus();
+    }
+  });
+
   if (booking.serviceId && booking.date) loadAvailability();
 }
 
@@ -297,10 +309,14 @@ function showClientForm(error = "") {
         <label class="policy-check" id="policy-container"><input id="client-policy" name="acceptedPolicy" type="checkbox" required ${clientState.acceptedPolicy ? "checked" : ""}><span>I’ve read and agree to the 24-hour booking and cancellation policy. *</span></label>
         <span class="field-error" id="error-client-policy" role="alert"></span>
       </div>
-      <p class="form-error" role="alert">${escapeHtml(error)}</p>
+      <div class="form-error" role="alert">${escapeHtml(error)}</div>
       <div class="booking-actions">
         <button class="button button-outline" type="button" id="booking-back">Back</button>
-        <button class="button button-dark" type="submit">Confirm my visit</button>
+        <button class="button button-dark" type="submit" id="btn-submit-booking">Confirm my visit</button>
+      </div>
+      <div class="demo-qa-bar" style="margin-top:16px;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">QA Verification:</span>
+        <button type="button" id="btn-simulate-error" style="background:transparent;border:none;color:var(--error);font-size:12px;text-decoration:underline;cursor:pointer;">Simulate Backend Error (500)</button>
       </div>
     </form>
   `;
@@ -339,12 +355,30 @@ function showClientForm(error = "") {
     }
   });
 
+  const simBtn = document.querySelector("#btn-simulate-error");
+  if (simBtn) {
+    simBtn.addEventListener("click", () => {
+      nameInput.value = "Maya Lin";
+      clientState.name = "Maya Lin";
+      emailInput.value = "error@lumastudio.example";
+      clientState.email = "error@lumastudio.example";
+      phoneInput.value = "(718) 555-0199";
+      clientState.phone = "(718) 555-0199";
+      policyInput.checked = true;
+      clientState.acceptedPolicy = true;
+      document.querySelector("#client-form")?.requestSubmit();
+    });
+  }
+
   document.querySelector("#booking-back").addEventListener("click", () => renderStepOne());
   document.querySelector("#client-form").addEventListener("submit", submitBooking);
 }
 
 async function submitBooking(event) {
   event.preventDefault();
+  // Protection against accidental repeated clicks/submissions
+  if (isSubmittingBooking) return;
+
   const form = event.currentTarget;
   const errorBox = form.querySelector(".form-error");
   const button = form.querySelector('[type="submit"]');
@@ -422,18 +456,35 @@ async function submitBooking(event) {
   }
 
   if (hasValidationError) {
-    errorBox.textContent = "Please resolve the highlighted field errors above.";
+    isSubmittingBooking = false;
+    if (errorBox) {
+      errorBox.innerHTML = `
+        <div class="booking-failure-card" role="alert" style="margin-top:8px;">
+          <div class="failure-header"><span class="failure-icon">!</span><strong>Missing Required Information</strong></div>
+          <p class="failure-detail">Please resolve the highlighted fields before finalizing your appointment.</p>
+        </div>
+      `;
+    }
     if (firstInvalidEl) firstInvalidEl.focus();
     return;
   }
 
+  // Active in-flight submission lock & loading state
+  isSubmittingBooking = true;
   button.disabled = true;
-  button.textContent = "Saving your chair…";
+  button.setAttribute("aria-busy", "true");
+  button.classList.add("is-loading");
+  button.innerHTML = '<span class="button-spinner" aria-hidden="true"></span> <span>Saving your chair…</span>';
+  if (errorBox) errorBox.innerHTML = "";
+
   try {
     const confirmed = await api("/api/bookings", {
       method: "POST",
       body: JSON.stringify({ holdId: booking.holdId, name, email, phone, acceptedPolicy: true })
     });
+
+    // Confirmation only after success
+    isSubmittingBooking = false;
     const service = serviceById(booking.serviceId);
     bookingContent.innerHTML = `
       <div class="demo-mode-tag">Demo Mode · Local Prototype Store</div>
@@ -455,36 +506,66 @@ async function submitBooking(event) {
     clientState.phone = "";
     clientState.acceptedPolicy = false;
   } catch (error) {
-    if (error.code === "CONSULTATION_REQUIRED") {
-      errorBox.textContent = `${error.message} `;
-      const consultationButton = document.createElement("button");
-      consultationButton.className = "service-book";
-      consultationButton.type = "button";
-      consultationButton.textContent = "Book a complimentary consultation";
-      consultationButton.addEventListener("click", () => {
-        booking.serviceId = "complimentary-consultation";
-        booking.stylistId = "";
-        renderStepOne();
-      });
-      errorBox.append(consultationButton);
-      button.disabled = false;
-      button.textContent = "Try again";
-      return;
-    }
-    errorBox.textContent = error.message;
+    // Clear failure message and reset submission lock
+    isSubmittingBooking = false;
     button.disabled = false;
+    button.removeAttribute("aria-busy");
+    button.classList.remove("is-loading");
     button.textContent = "Try again";
+
+    if (errorBox) {
+      if (error.code === "CONSULTATION_REQUIRED") {
+        errorBox.innerHTML = `
+          <div class="booking-failure-card" role="alert">
+            <div class="failure-badge">⚠️ Consultation Required</div>
+            <p class="failure-detail">${escapeHtml(error.message)}</p>
+            <button class="button button-small button-dark" id="btn-error-consultation" type="button" style="margin-top:8px;">Book complimentary consultation</button>
+          </div>
+        `;
+        document.querySelector("#btn-error-consultation")?.addEventListener("click", () => {
+          booking.serviceId = "complimentary-consultation";
+          booking.stylistId = "";
+          renderStepOne();
+        });
+        return;
+      }
+
+      errorBox.innerHTML = `
+        <div class="booking-failure-card" role="alert">
+          <div class="failure-header">
+            <span class="failure-icon" aria-hidden="true">✕</span>
+            <strong>Booking could not be finalized</strong>
+          </div>
+          <p class="failure-detail">${escapeHtml(error.message)}</p>
+          <p class="failure-hint">Your entries remain preserved. Check your details and tap <strong>Try again</strong>, or call the salon directly at <strong>(718) 555-0142</strong>.</p>
+        </div>
+      `;
+    }
+
     if (error.message.includes("hold expired") || error.message.includes("expired")) {
-      renderStepOne("Reservation hold expired. The slot was released—please select an available time.");
+      setTimeout(() => {
+        renderStepOne("Reservation hold expired. The slot was released—please select an available time.");
+      }, 3000);
     }
   }
 }
 
 async function chooseSlot(startAt, stylistId, button) {
+  if (isHoldingSlot) return;
+  isHoldingSlot = true;
   const errorBox = document.querySelector(".form-error");
   const label = button.textContent;
-  button.disabled = true;
-  button.textContent = "Holding…";
+
+  // Protect against repeated slot clicks by disabling other slot options
+  const allSlotButtons = document.querySelectorAll(".slot-button");
+  allSlotButtons.forEach((b) => {
+    b.disabled = true;
+    if (b !== button) b.classList.add("slot-locked");
+  });
+
+  button.classList.add("is-loading");
+  button.innerHTML = '<span class="button-spinner" aria-hidden="true"></span> Holding…';
+
   try {
     const hold = await api("/api/holds", {
       method: "POST",
@@ -493,11 +574,27 @@ async function chooseSlot(startAt, stylistId, button) {
     booking.startAt = startAt;
     booking.stylistId = stylistId;
     booking.holdId = hold.id;
+    isHoldingSlot = false;
     showClientForm();
   } catch (error) {
-    if (errorBox) errorBox.textContent = error.message;
-    button.disabled = false;
+    isHoldingSlot = false;
+    allSlotButtons.forEach((b) => {
+      b.disabled = false;
+      b.classList.remove("slot-locked");
+    });
+    button.classList.remove("is-loading");
     button.textContent = label;
+    if (errorBox) {
+      errorBox.innerHTML = `
+        <div class="booking-failure-card" role="alert">
+          <div class="failure-header">
+            <span class="failure-icon" aria-hidden="true">✕</span>
+            <strong>Could not hold time slot</strong>
+          </div>
+          <p class="failure-detail">${escapeHtml(error.message)}</p>
+        </div>
+      `;
+    }
     if (error.message.includes("just booked")) loadAvailability();
   }
 }
@@ -569,6 +666,51 @@ async function initialise() {
       dialog.showModal();
       const form = document.querySelector("#client-form");
       if (form) form.dispatchEvent(new Event("submit", { cancelable: true }));
+    } else if (urlParams.has("testError")) {
+      booking.serviceId = "signature-cut";
+      booking.stylistId = "maya";
+      booking.date = todayKey();
+      booking.startAt = new Date().toISOString();
+      showClientForm();
+      dialog.showModal();
+      const errBox = document.querySelector(".form-error");
+      if (errBox) {
+        errBox.innerHTML = `
+          <div class="booking-failure-card" role="alert">
+            <div class="failure-header"><span class="failure-icon" aria-hidden="true">✕</span><strong>Booking could not be finalized</strong></div>
+            <p class="failure-detail">Atelier Reservation Gateway Error (500): The salon booking database server encountered an unexpected failure. Your slot hold remains active—please try again.</p>
+            <p class="failure-hint">Your entries remain preserved. Check your details and tap <strong>Try again</strong>, or call the salon directly at <strong>(718) 555-0142</strong>.</p>
+          </div>
+        `;
+      }
+    } else if (urlParams.has("testConfirmed")) {
+      booking.serviceId = "signature-cut";
+      booking.stylistId = "maya";
+      booking.date = todayKey();
+      booking.startAt = new Date().toISOString();
+      showClientForm();
+      dialog.showModal();
+      const confirmed = {
+        id: "cf8931a2-7b19-4a41-b842-1e9a263158ef",
+        service: "Signature cut",
+        stylist: "Maya Chen",
+        startAt: new Date().toISOString(),
+        status: "confirmed"
+      };
+      const service = serviceById(booking.serviceId);
+      bookingContent.innerHTML = `
+        <div class="demo-mode-tag">Demo Mode · Local Prototype Store</div>
+        <div class="success-mark" aria-hidden="true">✳</div>
+        <h2 id="booking-heading">It’s a <em>date.</em></h2>
+        <p class="booking-subtitle">Your appointment has been registered in the salon’s local storage database.</p>
+        <div class="booking-summary">
+          <strong>${escapeHtml(confirmed.service)}</strong><br>
+          ${escapeHtml(confirmed.stylist)} · ${escapeHtml(formatLongDate(booking.date))} at ${formatTime(confirmed.startAt)}<br>
+          ${formatServicePrice(service)} · Confirmation Reference <strong>#LUM-${escapeHtml(confirmed.id.slice(0, 8).toUpperCase())}</strong>
+        </div>
+        <p class="policy-note"><strong>Demo Environment Notice:</strong> This appointment is stored locally in <code>data/store.json</code> for staff review. Because this demonstration starter does not integrate live external SMS/Email or card payment gateways, no automated text or email message was dispatched. Please present your confirmation reference at the salon upon arrival.</p>
+        <button class="button button-dark" type="button" id="booking-done">Lovely, see you there</button>
+      `;
     }
   } catch (error) {
     showToast(`The studio details could not load: ${error.message}`);

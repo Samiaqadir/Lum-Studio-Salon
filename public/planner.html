@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#faf9f6">
+    <title>Social Content Planner &amp; Composer Wireframes — Luma Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=115">
+    <link rel="stylesheet" href="/admin.css?v=115">
+    <style>
+      :root {
+        --mono: "JetBrains Mono", Menlo, monospace;
+        --wire-border: #29281f;
+        --wire-accent: #6b7552;
+        --wire-draft: #55544a;
+        --wire-scheduled: #2d6a4f;
+      }
+      .planner-page {
+        min-height: 100vh;
+        background: var(--paper);
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+      }
+      .wireframe-disclaimer-banner {
+        background: #fff8e7;
+        border-bottom: 2px dashed #d4a34b;
+        padding: 12px 24px;
+        color: #7a500b;
+        font-size: 13.5px;
+        line-height: 1.5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .disclaimer-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .disclaimer-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .disclaimer-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: var(--radius-pill);
+        background: #f0c36d;
+        color: #4a3000;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .planner-nav-header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+        padding: 18px var(--gutter);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .planner-title-group h1 {
+        margin: 0;
+        font-size: 28px;
+        font-family: var(--display);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .planner-title-group p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .planner-top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .planner-main {
+        flex: 1;
+        padding: 24px var(--gutter) 60px;
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      /* View Mode Bar */
+      .planner-view-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+        background: var(--surface);
+        padding: 14px 18px;
+        border-radius: var(--radius-card);
+        border: 1px solid var(--line);
+      }
+      .view-pills, .status-pills {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .view-pill, .status-pill {
+        padding: 8px 16px;
+        border: 1px solid var(--line);
+        background: transparent;
+        border-radius: var(--radius-pill);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .view-pill:hover, .status-pill:hover {
+        background: var(--paper-dark);
+      }
+      .view-pill.is-active, .status-pill.is-active {
+        background: var(--olive-dark);
+        color: var(--on-dark);
+        border-color: var(--olive-dark);
+      }
+      /* Calendar Month View */
+      .calendar-container {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      }
+      .calendar-month-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--line);
+        background: #fcfbfa;
+      }
+      .calendar-month-title {
+        font-size: 20px;
+        font-weight: 700;
+        font-family: var(--display);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .month-nav-btn {
+        padding: 6px 12px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        border-radius: var(--radius-pill);
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .month-nav-btn:hover {
+        background: var(--paper-dark);
+      }
+      .calendar-days-head {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: var(--paper-dark);
+        border-bottom: 1px solid var(--line);
+        text-align: center;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .calendar-day-label {
+        padding: 10px 4px;
+      }
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .calendar-cell {
+        min-height: 140px;
+        border-left: 1px solid var(--line);
+        border-top: 1px solid var(--line);
+        padding: 8px;
+        background: var(--surface);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        transition: background-color 0.15s;
+      }
+      .calendar-cell:hover {
+        background: #fdfdfc;
+      }
+      .calendar-cell.is-other-month {
+        background: #f9f8f5;
+        opacity: 0.6;
+      }
+      .calendar-cell.is-today {
+        background: #f7f9f3;
+      }
+      .cell-top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .cell-date-num {
+        font-size: 13px;
+        font-weight: 700;
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+      }
+      .calendar-cell.is-today .cell-date-num {
+        background: var(--olive-dark);
+        color: var(--on-dark);
+      }
+      .cell-add-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0 4px;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .calendar-cell:hover .cell-add-btn {
+        opacity: 1;
+      }
+      .cell-add-btn:hover {
+        color: var(--olive-dark);
+        background: var(--olive-soft);
+      }
+      .cell-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+      /* Post Wireframe Card */
+      .post-card {
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        font-size: 11.5px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      }
+      .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        border-color: var(--olive-dark);
+      }
+      .post-card.status-draft {
+        border-left: 3px solid #66655b;
+        background: #faf9f6;
+      }
+      .post-card.status-scheduled {
+        border-left: 3px solid var(--olive);
+        background: #f7f9f3;
+      }
+      .post-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .post-platform-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: capitalize;
+      }
+      .platform-instagram { color: #bc2a8d; }
+      .platform-facebook { color: #1877f2; }
+      .platform-pinterest { color: #e60023; }
+      .platform-tiktok { color: #000000; }
+      .post-status-badge {
+        font-size: 9.5px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: var(--radius-pill);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .badge-draft {
+        background: #e9e8e2;
+        color: #4f4e46;
+      }
+      .badge-scheduled {
+        background: var(--olive-soft);
+        color: var(--olive-dark);
+      }
+      .post-card-caption {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: var(--ink);
+        line-height: 1.35;
+        font-size: 11px;
+      }
+      .post-card-time {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      /* Composer Modal */
+      .composer-modal {
+        width: min(920px, calc(100% - 32px));
+        max-height: min(880px, calc(100vh - 40px));
+        padding: 0;
+        border: 0;
+        border-radius: 20px;
+        background: var(--paper);
+        color: var(--ink);
+        box-shadow: 0 16px 80px rgba(0,0,0,0.3);
+      }
+      .composer-modal::backdrop {
+        background: rgba(22, 26, 22, 0.65);
+        backdrop-filter: blur(2px);
+      }
+      .composer-head {
+        padding: 20px 28px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--surface);
+      }
+      .composer-head h2 {
+        margin: 0;
+        font-size: 24px;
+        font-family: var(--display);
+      }
+      .composer-body {
+        padding: 24px 28px;
+        overflow-y: auto;
+        max-height: calc(880px - 160px);
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+      }
+      @media (max-width: 860px) {
+        .composer-body {
+          grid-template-columns: 1fr;
+        }
+      }
+      .composer-form-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .form-section-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .platform-selector-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .platform-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: var(--radius-pill);
+        border: 1px solid var(--line);
+        background: var(--surface);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.15s;
+      }
+      .platform-toggle-btn.is-selected {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: var(--on-dark);
+      }
+      .composer-textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-field);
+        background: var(--surface);
+        font-family: var(--body);
+        font-size: 14px;
+        line-height: 1.6;
+        resize: vertical;
+      }
+      .composer-textarea:focus {
+        border-color: var(--olive-dark);
+        outline: 2px solid var(--olive-dark);
+      }
+      .char-counter {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: right;
+        margin-top: 4px;
+      }
+      .hashtag-pill-group {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .hashtag-pill {
+        background: var(--paper-dark);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-pill);
+        padding: 4px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        color: var(--muted);
+      }
+      .hashtag-pill:hover {
+        background: var(--olive-soft);
+        color: var(--olive-dark);
+      }
+      .datetime-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .status-radio-group {
+        display: flex;
+        gap: 12px;
+        background: var(--surface);
+        padding: 10px 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-field);
+      }
+      .status-radio-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .status-radio-label input {
+        accent-color: var(--olive-dark);
+      }
+      /* Phone Preview Col */
+      .phone-wireframe-col {
+        background: #f3f2ee;
+        border-radius: var(--radius-card);
+        padding: 16px;
+        border: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .phone-frame {
+        width: 100%;
+        max-width: 270px;
+        background: #ffffff;
+        border-radius: 24px;
+        border: 3px solid #333;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .phone-top-notch {
+        height: 18px;
+        background: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .notch-camera {
+        width: 40px;
+        height: 6px;
+        background: #555;
+        border-radius: 4px;
+      }
+      .phone-post-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .post-avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--olive-dark);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .post-author-name {
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .post-location {
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .phone-post-media {
+        width: 100%;
+        aspect-ratio: 4/5;
+        background: #e5e3db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .phone-post-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .phone-post-actions {
+        padding: 8px 12px;
+        display: flex;
+        gap: 10px;
+        font-size: 14px;
+      }
+      .phone-post-caption-box {
+        padding: 0 12px 12px;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .phone-post-caption-box strong {
+        font-weight: 700;
+      }
+      .phone-post-caption-text {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .composer-foot {
+        padding: 16px 28px;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .composer-actions-right {
+        display: flex;
+        gap: 10px;
+      }
+      /* Architecture View */
+      .architecture-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-bottom: 24px;
+      }
+      .architecture-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      @media (max-width: 800px) {
+        .architecture-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      pre.ascii-wireframe {
+        background: #242621;
+        color: #e5f0d3;
+        padding: 16px;
+        border-radius: 10px;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.4;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body class="planner-page">
+    <!-- Mandatory Wireframe Disclaimer Banner -->
+    <aside class="wireframe-disclaimer-banner" role="note" aria-label="Prototype Notice">
+      <div class="disclaimer-content">
+        <span class="disclaimer-icon">⚠️</span>
+        <div>
+          <span class="disclaimer-badge">Wireframe Prototype</span>
+          <strong>Internal Social Content Planner &amp; Post Composer</strong> — For editorial schedule and caption layout only. 
+          <em>Do not imply real platform publishing.</em> No direct social network APIs are connected or executed.
+        </div>
+      </div>
+      <a class="button button-small button-outline" href="/admin">Staff Dashboard →</a>
+    </aside>
+
+    <header class="planner-nav-header">
+      <div class="planner-title-group">
+        <a class="wordmark" href="/" aria-label="Luma Hair Studio website">
+          <div class="wordmark-text">
+            <span class="wordmark-name">luma<span>.</span></span>
+            <small>SOCIAL PLANNER WIREFRAME</small>
+          </div>
+        </a>
+        <p>Monthly editorial calendar, copy draft composer, and status scheduling matrix.</p>
+      </div>
+      <div class="planner-top-actions">
+        <button class="button button-outline button-small" type="button" id="btn-refresh-posts">↻ Refresh Feed</button>
+        <button class="button button-dark button-small" type="button" id="btn-open-composer">＋ New Post Wireframe</button>
+        <a class="button button-outline-light button-small" href="/" style="color:var(--ink);">Exit to Home</a>
+      </div>
+    </header>
+
+    <main class="planner-main">
+      <!-- Planner Controls & View Bar -->
+      <section class="planner-view-bar" aria-label="Planner filters and view modes">
+        <div class="view-pills">
+          <button class="view-pill is-active" type="button" data-view="calendar">📅 Month Calendar</button>
+          <button class="view-pill" type="button" data-view="feed">📋 Editorial List (<span id="feed-count">0</span>)</button>
+          <button class="view-pill" type="button" data-view="specs">📐 Wireframe Blueprints &amp; Specs</button>
+        </div>
+        <div class="status-pills">
+          <span style="font-size:12px;font-weight:700;color:var(--muted);align-self:center;margin-right:4px;">Filter Status:</span>
+          <button class="status-pill is-active" type="button" data-status-filter="all">All</button>
+          <button class="status-pill" type="button" data-status-filter="Draft">Draft (<span id="draft-count">0</span>)</button>
+          <button class="status-pill" type="button" data-status-filter="Scheduled">Scheduled (<span id="scheduled-count">0</span>)</button>
+        </div>
+      </section>
+
+      <!-- View 1: Month Calendar View -->
+      <section id="view-calendar" class="planner-view-panel">
+        <div class="calendar-container">
+          <div class="calendar-month-header">
+            <div class="calendar-month-title">
+              <span id="current-month-label">November 2026</span>
+              <span class="badge-draft" style="font-size:11px;padding:3px 10px;">Atelier Editorial Schedule</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="month-nav-btn" type="button" id="btn-prev-month">← Oct</button>
+              <button class="month-nav-btn" type="button" id="btn-today-month">Current</button>
+              <button class="month-nav-btn" type="button" id="btn-next-month">Dec →</button>
+            </div>
+          </div>
+          <div class="calendar-days-head">
+            <div class="calendar-day-label">Mon</div>
+            <div class="calendar-day-label">Tue</div>
+            <div class="calendar-day-label">Wed</div>
+            <div class="calendar-day-label">Thu</div>
+            <div class="calendar-day-label">Fri</div>
+            <div class="calendar-day-label">Sat</div>
+            <div class="calendar-day-label">Sun</div>
+          </div>
+          <div class="calendar-grid" id="calendar-grid">
+            <!-- Calendar cells injected via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 2: Editorial Feed / List View -->
+      <section id="view-feed" class="planner-view-panel" hidden>
+        <div class="calendar-container" style="padding:24px;">
+          <h2 style="font-family:var(--display);margin-bottom:12px;">Social Feed Pipeline</h2>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">Review all planned Instagram, Facebook, TikTok, and Pinterest creative assets, caption copy, and publish schedules.</p>
+          <div id="feed-list" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:18px;">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 3: Wireframe Blueprints & Specs -->
+      <section id="view-specs" class="planner-view-panel" hidden>
+        <div class="architecture-card">
+          <span class="eyebrow">WIREFRAME ARCHITECTURE DOCUMENTATION</span>
+          <h2 style="font-family:var(--display);font-size:32px;margin:10px 0 16px;">Core Screens &amp; Data Specification</h2>
+          <p style="color:var(--muted);line-height:1.7;">This social planner module satisfies all wireframe requirements for multi-platform editorial scheduling, caption drafting, planned timing, and lifecycle status management.</p>
+
+          <div class="architecture-grid">
+            <div>
+              <h3>Screen 1: Monthly Calendar Grid Blueprint</h3>
+              <pre class="ascii-wireframe">+-------------------------------------------------------------------------+
+| [luma.] SOCIAL PLANNER WIREFRAME     [Filter: All/Draft/Scheduled]      |
+| [Month: Nov 2026]                    [+ New Post Wireframe]             |
++-----+-----+-----+-----+-----+-----+-------------------------------------+
+| MON | TUE | WED | THU | FRI | SAT | SUN                                 |
++-----+-----+-----+-----+-----+-----+-------------------------------------+
+| 02  | 03  | 04  | 05  | 06  | 07  | 08                                  |
+|     |     | IG  |     | FB  |     |                                     |
+|     |     |[SCH]|     |[SCH]|     |                                     |
++-----+-----+-----+-----+-----+-----+-------------------------------------+
+| 09  | 10  | 11  | 12  | 13  | 14  | 15                                  |
+|     | PIN |     | TT  |     |     |                                     |
+|     |[DRF]|     |[DRF]|     |     |                                     |
++-------------------------------------------------------------------------+</pre>
+            </div>
+            <div>
+              <h3>Screen 2: Post Composer Modal Blueprint</h3>
+              <pre class="ascii-wireframe">+-------------------------------------------------------------------------+
+| POST COMPOSER - WIREFRAME (Internal Planning Only · No Live Publishing)  |
++----------------------------------------------------+--------------------+
+| 01. PLATFORM SELECTOR                              | PHONE MOCKUP       |
+| [*] Instagram   [ ] Facebook   [ ] Pinterest [ ] TT | +----------------+ |
+|                                                    | | [Luma Studio]  | |
+| 02. CAPTION COPY                                   | | [Photo Asset]  | |
+| [ Textarea: Lived-in blonde tones by Maya Chen... ]| |                | |
+| Char count: 184 / 2200  | Tags: #Balayage #Brooklyn| | Caption copy.. | |
+|                                                    | +----------------+ |
+| 03. PLANNED DATE & TIME                            |                    |
+| Date: [ 2026-11-04 ]    Time: [ 11:30 AM ]         | STATUS BADGES:     |
+|                                                    | (o) Draft          |
+| 04. STATUS & ACTIONS                               | ( ) Scheduled      |
+| [ Cancel ]      [ Save Draft ]    [ Schedule Post ]|                    |
++----------------------------------------------------+--------------------+</pre>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;padding:16px;background:var(--paper-dark);border-radius:12px;">
+            <h4 style="margin:0 0 8px;">Key Compliance &amp; Safety Checks</h4>
+            <ul style="margin:0;padding-left:20px;font-size:13.5px;line-height:1.8;">
+              <li><strong>Zero External API Leakage:</strong> No OAuth tokens or live publish endpoints are contacted.</li>
+              <li><strong>Clear Status Separation:</strong> Posts exist strictly as <code>Draft</code> (unapproved copy) or <code>Scheduled</code> (approved for internal salon calendar).</li>
+              <li><strong>Persistence:</strong> Stored locally in <code>data/store.json</code> for staff review.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Post Composer Modal -->
+    <dialog class="composer-modal" id="composer-modal" aria-labelledby="composer-title">
+      <div class="composer-head">
+        <div>
+          <span class="eyebrow" style="font-size:11px;">CONTENT STUDIO WIREFRAME</span>
+          <h2 id="composer-title">Post Composer</h2>
+        </div>
+        <button class="dialog-close" type="button" id="btn-close-composer" aria-label="Close composer">×</button>
+      </div>
+
+      <form id="composer-form">
+        <div class="composer-body">
+          <div class="composer-form-col">
+            <!-- Platform Selector -->
+            <div>
+              <div class="form-section-title">
+                <span>01 · Target Platform *</span>
+                <small style="color:var(--muted);font-weight:400;text-transform:none;">Mock platform target</small>
+              </div>
+              <div class="platform-selector-group" id="platform-selector">
+                <button class="platform-toggle-btn is-selected" type="button" data-platform="instagram">📸 Instagram (@lumahairnyc)</button>
+                <button class="platform-toggle-btn" type="button" data-platform="facebook">👥 Facebook (Luma Studio)</button>
+                <button class="platform-toggle-btn" type="button" data-platform="pinterest">📌 Pinterest (Moodboards)</button>
+                <button class="platform-toggle-btn" type="button" data-platform="tiktok">🎵 TikTok (@luma.cuts)</button>
+              </div>
+            </div>
+
+            <!-- Caption Textarea -->
+            <div>
+              <div class="form-section-title">
+                <span>02 · Caption Copy *</span>
+                <span class="char-counter" id="char-counter">0 / 2,200</span>
+              </div>
+              <textarea class="composer-textarea" id="post-caption" required placeholder="Write thoughtful copy celebrating your client's hair, stylist technique, or studio moments…"></textarea>
+              <div class="hashtag-pill-group">
+                <span style="font-size:11px;color:var(--muted);align-self:center;">Insert tag:</span>
+                <button class="hashtag-pill" type="button" data-tag="#LumaStudio">#LumaStudio</button>
+                <button class="hashtag-pill" type="button" data-tag="#BrooklynHair">#BrooklynHair</button>
+                <button class="hashtag-pill" type="button" data-tag="#DimensionalBalayage">#DimensionalBalayage</button>
+                <button class="hashtag-pill" type="button" data-tag="#LivedInColor">#LivedInColor</button>
+                <button class="hashtag-pill" type="button" data-tag="#HealthyHairRituals">#HealthyHairRituals</button>
+              </div>
+            </div>
+
+            <!-- Planned Date & Time -->
+            <div>
+              <div class="form-section-title">
+                <span>03 · Planned Date &amp; Time *</span>
+                <small style="color:var(--olive-dark);font-weight:600;text-transform:none;">Peak engagement: 11:30 AM</small>
+              </div>
+              <div class="datetime-row">
+                <div class="booking-field" style="margin:0;">
+                  <label class="booking-label" for="post-date">PLANNED DATE</label>
+                  <input class="booking-input" id="post-date" type="date" required>
+                </div>
+                <div class="booking-field" style="margin:0;">
+                  <label class="booking-label" for="post-time">PLANNED TIME</label>
+                  <input class="booking-input" id="post-time" type="time" value="11:30" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Media / Creative Asset Mockup -->
+            <div>
+              <div class="form-section-title">
+                <span>04 · Photo / Creative Asset</span>
+                <small style="color:var(--muted);font-weight:400;text-transform:none;">Aspect ratio 4:5 / 1:1</small>
+              </div>
+              <select class="booking-select" id="post-media-select">
+                <option value="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80">Honey Blonde Balayage &amp; Waves (Maya Chen)</option>
+                <option value="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=800&q=80">Modern Textured Dry Cut (Jules Rivera)</option>
+                <option value="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=800&q=80">Rich Gloss Glaze &amp; Curls (Imani Brooks)</option>
+                <option value="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80">Atelier Studio Architecture &amp; Sunlight</option>
+              </select>
+            </div>
+
+            <!-- Status Selector -->
+            <div>
+              <div class="form-section-title">
+                <span>05 · Editorial Status *</span>
+              </div>
+              <div class="status-radio-group">
+                <label class="status-radio-label">
+                  <input type="radio" name="postStatus" value="Draft" id="status-draft" checked>
+                  <span><strong>Draft</strong> — Save internally for copywriting and team review</span>
+                </label>
+                <label class="status-radio-label">
+                  <input type="radio" name="postStatus" value="Scheduled" id="status-scheduled">
+                  <span><strong>Scheduled</strong> — Approved date &amp; time on studio calendar</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Mobile Wireframe Preview Mockup -->
+          <div class="phone-wireframe-col">
+            <span style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px;letter-spacing:0.5px;">LIVE FEED PREVIEW</span>
+            <div class="phone-frame">
+              <div class="phone-top-notch"><div class="notch-camera"></div></div>
+              <div class="phone-post-header">
+                <div class="post-avatar">L</div>
+                <div>
+                  <div class="post-author-name">lumastudio.brooklyn</div>
+                  <div class="post-location">Williamsburg, NY</div>
+                </div>
+              </div>
+              <div class="phone-post-media">
+                <img id="preview-image" src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=800&q=80" alt="Post preview image">
+              </div>
+              <div class="phone-post-actions">
+                <span>♡</span> <span>💬</span> <span>↗</span>
+              </div>
+              <div class="phone-post-caption-box">
+                <strong>lumastudio.brooklyn</strong>
+                <span class="phone-post-caption-text" id="preview-caption">Soft lived-in waves and warm honey tones...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer-foot">
+          <div style="font-size:12px;color:var(--muted);">
+            ⚠️ <em>Planning Wireframe only</em> · Stored locally in <code>data/store.json</code>.
+          </div>
+          <div class="composer-actions-right">
+            <button class="button button-outline" type="button" id="btn-cancel-composer">Cancel</button>
+            <button class="button button-outline" type="button" id="btn-save-draft">Save as Draft</button>
+            <button class="button button-dark" type="button" id="btn-schedule-post">Schedule Post</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="planner-toast" role="status" aria-live="polite"></div>
+
+    <script>
+      let posts = [];
+      let currentMonth = new Date(2026, 10, 1); // November 2026
+      let selectedPlatform = "instagram";
+      let editingPostId = null;
+      let activeStatusFilter = "all";
+
+      const toast = document.querySelector("#planner-toast");
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 3200);
+      }
+
+      async function fetchPosts() {
+        try {
+          const res = await fetch("/api/posts");
+          posts = await res.json();
+          renderCalendar();
+          renderFeedList();
+          updateCounters();
+        } catch (err) {
+          showToast("Failed to load planner posts: " + err.message);
+        }
+      }
+
+      function updateCounters() {
+        const drafts = posts.filter(p => p.status === "Draft").length;
+        const scheduled = posts.filter(p => p.status === "Scheduled").length;
+        document.querySelector("#draft-count").textContent = drafts;
+        document.querySelector("#scheduled-count").textContent = scheduled;
+        document.querySelector("#feed-count").textContent = posts.length;
+      }
+
+      function renderCalendar() {
+        const grid = document.querySelector("#calendar-grid");
+        grid.innerHTML = "";
+
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+
+        const monthName = currentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+        document.querySelector("#current-month-label").textContent = monthName;
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        // Day of week for 1st (0=Sun, 1=Mon, ..., 6=Sat). We want Mon=0
+        let startDayIndex = (firstDay.getDay() + 6) % 7;
+        const totalDays = lastDay.getDate();
+
+        // Prev month days
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+        for (let i = startDayIndex - 1; i >= 0; i--) {
+          const dayNum = prevMonthLastDay - i;
+          const cell = document.createElement("div");
+          cell.className = "calendar-cell is-other-month";
+          cell.innerHTML = `<div class="cell-top-bar"><span class="cell-date-num">${dayNum}</span></div>`;
+          grid.appendChild(cell);
+        }
+
+        // Current month days
+        const todayStr = "2026-11-04"; // Demo highlight date
+        for (let d = 1; d <= totalDays; d++) {
+          const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+          const isToday = dateStr === todayStr;
+
+          const cell = document.createElement("div");
+          cell.className = `calendar-cell ${isToday ? "is-today" : ""}`;
+
+          // Filter posts for this day
+          const dayPosts = posts.filter(p => p.plannedDate === dateStr && (activeStatusFilter === "all" || p.status === activeStatusFilter));
+
+          cell.innerHTML = `
+            <div class="cell-top-bar">
+              <span class="cell-date-num">${d}</span>
+              <button class="cell-add-btn" type="button" title="Add post on this date" data-add-date="${dateStr}">＋</button>
+            </div>
+            <div class="cell-posts">
+              ${dayPosts.map(p => `
+                <div class="post-card status-${p.status.toLowerCase()}" data-post-id="${p.id}" tabindex="0" role="button" aria-label="${p.platform} post: ${p.status}">
+                  <div class="post-card-header">
+                    <span class="post-platform-tag platform-${p.platform}">${getPlatformIcon(p.platform)} ${p.platform}</span>
+                    <span class="post-status-badge badge-${p.status.toLowerCase()}">${p.status}</span>
+                  </div>
+                  <div class="post-card-caption">${escapeHtml(p.caption)}</div>
+                  <div class="post-card-time">⏰ ${p.plannedTime || "12:00"}</div>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          grid.appendChild(cell);
+        }
+
+        // Fill remaining grid spaces (up to 35 or 42)
+        const totalCells = startDayIndex + totalDays;
+        const remaining = (7 - (totalCells % 7)) % 7;
+        for (let i = 1; i <= remaining; i++) {
+          const cell = document.createElement("div");
+          cell.className = "calendar-cell is-other-month";
+          cell.innerHTML = `<div class="cell-top-bar"><span class="cell-date-num">${i}</span></div>`;
+          grid.appendChild(cell);
+        }
+      }
+
+      function getPlatformIcon(platform) {
+        switch (platform) {
+          case "instagram": return "📸";
+          case "facebook": return "👥";
+          case "pinterest": return "📌";
+          case "tiktok": return "🎵";
+          default: return "📱";
+        }
+      }
+
+      function escapeHtml(str) {
+        return String(str || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      }
+
+      function renderFeedList() {
+        const container = document.querySelector("#feed-list");
+        const filtered = posts.filter(p => activeStatusFilter === "all" || p.status === activeStatusFilter);
+        if (!filtered.length) {
+          container.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">No posts found for this filter.</p>';
+          return;
+        }
+        container.innerHTML = filtered.map(p => `
+          <article class="post-card status-${p.status.toLowerCase()}" data-post-id="${p.id}" style="padding:14px;gap:8px;">
+            <div class="post-card-header">
+              <span class="post-platform-tag platform-${p.platform}" style="font-size:12px;">${getPlatformIcon(p.platform)} ${p.platform.toUpperCase()}</span>
+              <span class="post-status-badge badge-${p.status.toLowerCase()}">${p.status}</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted);">📅 Planned: ${p.plannedDate} at ${p.plannedTime}</div>
+            <p style="margin:4px 0;font-size:13px;line-height:1.5;">${escapeHtml(p.caption)}</p>
+            <div style="margin-top:auto;display:flex;justify-content:flex-end;">
+              <button class="button button-outline-light button-small" type="button" style="font-size:11px;padding:4px 10px;">Edit Wireframe</button>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      // Composer Modal Controls
+      const composer = document.querySelector("#composer-modal");
+      const captionInput = document.querySelector("#post-caption");
+      const dateInput = document.querySelector("#post-date");
+      const timeInput = document.querySelector("#post-time");
+      const mediaSelect = document.querySelector("#post-media-select");
+      const charCounter = document.querySelector("#char-counter");
+      const previewCaption = document.querySelector("#preview-caption");
+      const previewImage = document.querySelector("#preview-image");
+
+      function openComposer(post = null, prefillDate = null) {
+        editingPostId = post ? post.id : null;
+        document.querySelector("#composer-title").textContent = post ? "Edit Social Post Wireframe" : "New Social Post Wireframe";
+
+        if (post) {
+          selectedPlatform = post.platform || "instagram";
+          captionInput.value = post.caption || "";
+          dateInput.value = post.plannedDate || "";
+          timeInput.value = post.plannedTime || "11:30";
+          mediaSelect.value = post.mediaUrl || mediaSelect.options[0].value;
+          if (post.status === "Scheduled") {
+            document.querySelector("#status-scheduled").checked = true;
+          } else {
+            document.querySelector("#status-draft").checked = true;
+          }
+        } else {
+          selectedPlatform = "instagram";
+          captionInput.value = "";
+          dateInput.value = prefillDate || "2026-11-04";
+          timeInput.value = "11:30";
+          mediaSelect.selectedIndex = 0;
+          document.querySelector("#status-draft").checked = true;
+        }
+
+        updatePlatformToggles();
+        updateLivePreview();
+        composer.showModal();
+      }
+
+      function updatePlatformToggles() {
+        document.querySelectorAll(".platform-toggle-btn").forEach(btn => {
+          btn.classList.toggle("is-selected", btn.dataset.platform === selectedPlatform);
+        });
+      }
+
+      function updateLivePreview() {
+        const text = captionInput.value || "Your creative caption preview will display here in real-time…";
+        previewCaption.textContent = text;
+        previewImage.src = mediaSelect.value;
+        charCounter.textContent = `${captionInput.value.length} / 2,200`;
+      }
+
+      captionInput.addEventListener("input", updateLivePreview);
+      mediaSelect.addEventListener("change", updateLivePreview);
+
+      // Hashtag helpers
+      document.querySelectorAll(".hashtag-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          captionInput.value = (captionInput.value + " " + pill.dataset.tag).trim();
+          updateLivePreview();
+          captionInput.focus();
+        });
+      });
+
+      // Platform selection
+      document.querySelectorAll(".platform-toggle-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedPlatform = btn.dataset.platform;
+          updatePlatformToggles();
+        });
+      });
+
+      async function savePost(targetStatus) {
+        const caption = captionInput.value.trim();
+        const plannedDate = dateInput.value;
+        const plannedTime = timeInput.value;
+        const mediaUrl = mediaSelect.value;
+
+        if (!caption) {
+          alert("Please enter a caption for your wireframe post.");
+          captionInput.focus();
+          return;
+        }
+        if (!plannedDate) {
+          alert("Please specify a planned date.");
+          dateInput.focus();
+          return;
+        }
+
+        const payload = {
+          platform: selectedPlatform,
+          caption,
+          plannedDate,
+          plannedTime,
+          status: targetStatus,
+          mediaUrl
+        };
+
+        try {
+          if (editingPostId) {
+            // Edit existing
+            const res = await fetch(`/api/admin/posts/${editingPostId}`, {
+              method: "PATCH",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error("Could not update post.");
+            showToast(`Post updated as ${targetStatus}!`);
+          } else {
+            // Create new
+            const res = await fetch("/api/admin/posts", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error("Could not save post.");
+            showToast(`New post saved as ${targetStatus}!`);
+          }
+
+          composer.close();
+          await fetchPosts();
+        } catch (err) {
+          showToast("Error saving post: " + err.message);
+        }
+      }
+
+      document.querySelector("#btn-save-draft").addEventListener("click", () => savePost("Draft"));
+      document.querySelector("#btn-schedule-post").addEventListener("click", () => savePost("Scheduled"));
+      document.querySelector("#btn-cancel-composer").addEventListener("click", () => composer.close());
+      document.querySelector("#btn-close-composer").addEventListener("click", () => composer.close());
+
+      // Open composer button
+      document.querySelector("#btn-open-composer").addEventListener("click", () => openComposer());
+      document.querySelector("#btn-refresh-posts").addEventListener("click", fetchPosts);
+
+      // Calendar cell / post clicks
+      document.addEventListener("click", (e) => {
+        const postCard = e.target.closest("[data-post-id]");
+        if (postCard) {
+          const post = posts.find(p => p.id === postCard.dataset.postId);
+          if (post) openComposer(post);
+          return;
+        }
+
+        const addBtn = e.target.closest("[data-add-date]");
+        if (addBtn) {
+          openComposer(null, addBtn.dataset.addDate);
+          return;
+        }
+      });
+
+      // View switching
+      document.querySelectorAll(".view-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          document.querySelectorAll(".view-pill").forEach(p => p.classList.remove("is-active"));
+          pill.classList.add("is-active");
+
+          const view = pill.dataset.view;
+          document.querySelector("#view-calendar").hidden = view !== "calendar";
+          document.querySelector("#view-feed").hidden = view !== "feed";
+          document.querySelector("#view-specs").hidden = view !== "specs";
+        });
+      });
+
+      // Status filtering
+      document.querySelectorAll(".status-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          document.querySelectorAll(".status-pill").forEach(p => p.classList.remove("is-active"));
+          pill.classList.add("is-active");
+          activeStatusFilter = pill.dataset.statusFilter;
+          renderCalendar();
+          renderFeedList();
+        });
+      });
+
+      // Month navigation
+      document.querySelector("#btn-prev-month").addEventListener("click", () => {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        renderCalendar();
+      });
+      document.querySelector("#btn-next-month").addEventListener("click", () => {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        renderCalendar();
+      });
+      document.querySelector("#btn-today-month").addEventListener("click", () => {
+        currentMonth = new Date(2026, 10, 1);
+        renderCalendar();
+      });
+
+      // Initial fetch
+      fetchPosts().then(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("openComposer")) {
+          setTimeout(() => openComposer(posts[0] || null), 250);
+        } else if (urlParams.get("view") === "specs") {
+          document.querySelector('[data-view="specs"]')?.click();
+        }
+      });
+    </script>
+  </body>
+</html>
