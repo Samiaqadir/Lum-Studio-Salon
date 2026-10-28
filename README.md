@@ -31,10 +31,10 @@ Appointments and holds are persisted to `data/store.json`, automatically seeded 
 
 ### 2. Run Test Suites
 ```bash
-# Core Node.js native test runner (5/5 suites)
+# Core Node.js native test runner (12/12 integration tests)
 npm test
 
-# Full 25-scenario comprehensive QA runner
+# Full 29-scenario comprehensive QA runner (6 suites)
 node scratch/run_full_qa.js
 ```
 
@@ -42,11 +42,12 @@ node scratch/run_full_qa.js
 
 ## 📐 Project Structure & Documentation
 
-* **[SCOPE.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/SCOPE.md)**: Comprehensive one-page scope document covering target audience, pages, services, staff, booking fields, confirmation behavior, out-of-scope items, the full visual user flow diagram, and the Social Planner feature specification.
-* **[QA_CHECKLIST.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/QA_CHECKLIST.md)**: Standardized Quality Assurance Checklist with individual test IDs and expected results across Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, and Broken Links.
-* **`screenshots/`**: Visual evidence captured across standard desktop and mobile resolutions:
-  * `desktop_preview_1280.png` (1280px wide viewport)
-  * `mobile_preview_375.png` (375px wide viewport)
+* **[API_CONTRACT.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/API_CONTRACT.md)**: Formal API & Mock Contract specification covering all endpoints (`/api/holds`, `/api/bookings`, `/api/posts`), error codes, payload schemas, input preservation guarantees, and the Mock Data Privacy & Security Policy.
+* **[DEFECT_LIST.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/DEFECT_LIST.md)**: Standardized Defect Triage Register classifying all defects (Critical, High, Medium, Low) with steps, expected/actual results, environment, evidence, and remediation logs (DEF-001 through DEF-007).
+* **[QA_CHECKLIST.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/QA_CHECKLIST.md)**: Comprehensive Quality Assurance Checklist with individual test IDs and expected results across 8 categories (Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, Broken Links, and Social Content Planner).
+* **[QA_TEST_SHEET.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/QA_TEST_SHEET.md)**: Scenario execution matrix documenting verified test runs, inputs, expected/actual outcomes, and defect traceability.
+* **[SCOPE.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/SCOPE.md)**: Salon Scope & Social Planner Specifications.
+* **`screenshots/`**: Visual evidence captured across standard desktop and mobile resolutions.
 
 ```text
 ├── SCOPE.md                  # Task 1 & Task 4: Salon Scope & Social Planner Specifications

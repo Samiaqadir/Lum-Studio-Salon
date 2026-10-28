@@ -1,9 +1,9 @@
 # Luma Studio — Quality Assurance (QA) Test Checklist
 
 **Document ID:** `QA-LUMA-2026-CHECKLIST`  
-**Execution Date:** October 26, 2026  
-**Test Suite Status:** 25 Automated Integration Tests Passed (100%), Manual Scenarios Verified  
-**Coverage Categories:** Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, Broken Links.  
+**Execution Date:** October 28, 2026  
+**Test Suite Status:** 29 Automated Integration Tests Passed (100%), Manual Scenarios Verified  
+**Coverage Categories:** Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, Broken Links, Social Content Planner & Post Composer.  
 
 ---
 
@@ -99,7 +99,26 @@
 
 ---
 
+## 8. Social Content Planner & Post Composer (`QA-SOC`)
+
+| ID | Test Scenario | Steps to Execute | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **QA-SOC-01** | Month Calendar Navigation | In `/planner.html`, click `#btn-prev-month`, `#btn-next-month`, and `#btn-today-month`. | Month title updates (e.g. October 2026, December 2026); grid re-renders with correct start day offset; date cells reflect correct days. | **PASS** |
+| **QA-SOC-02** | Create Local Draft & Planned Date/Time | Click "New Post Wireframe" or cell `＋`. Enter caption, pick platform, select planned date & time, click "Save as Draft". | Post saves via `POST /api/posts` with status "Draft"; toast notification confirms save; new draft renders inside calendar day cell with platform tag and clock icon. | **PASS** |
+| **QA-SOC-03** | Edit Draft & Transition to Scheduled | Click an existing draft card. Modify caption, adjust planned time, click "Schedule Post". | Post updates via `PATCH /api/posts/:id` with status "Scheduled"; badge reflects green Scheduled state; card updates on calendar and feed. | **PASS** |
+| **QA-SOC-04** | Delete Draft Wireframe | Open an existing draft in composer; click "Delete Draft"; confirm prompt. | Post deleted via `DELETE /api/posts/:id`; card removed from calendar; toast confirms removal. | **PASS** |
+| **QA-SOC-05** | Live Publishing Disclaimer & Scope Specs | Inspect disclaimer banner and `SCOPE.md` specifications. | UI displays warning: *"Actual publishing requires approved API access, permissions, and scope"*; approved OAuth scopes (Instagram Graph, Pages API, TikTok API, Pinterest API) explicitly documented. | **PASS** |
+
+---
+
 ## Summary of Verification Evidence
-* **Automated Node Test Suite:** `npm test` passes all 5 core subtests.
-* **Extended QA Integration Runner:** `node scratch/run_full_qa.js` passes all 25 assertions.
-* **Visual Multi-Viewport Evidence:** Screenshots captured and archived in `screenshots/desktop_preview_1280.png` (1280px) and `screenshots/mobile_preview_375.png` (375px).
+* **Automated Node Test Suite:** `npm test` passes 12 integration tests (100%).
+* **Extended QA Integration Runner:** `node scratch/run_full_qa.js` passes all 29 assertions across 6 suites (100%).
+* **Visual Multi-Viewport Evidence:** Screenshots captured and archived in `screenshots/`:
+  * Desktop Preview: [`screenshots/desktop_preview_1280.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/desktop_preview_1280.png)
+  * Mobile Viewport: [`screenshots/mobile_preview_375.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/mobile_preview_375.png)
+  * Booking Validation Errors: [`screenshots/booking_validation_errors.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/booking_validation_errors.png)
+  * Booking Failure Error Resilience: [`screenshots/booking_failure_error.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/booking_failure_error.png)
+  * Booking Success Confirmation: [`screenshots/booking_confirmation.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/booking_confirmation.png)
+  * Social Planner Calendar: [`screenshots/social_planner_calendar.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/social_planner_calendar.png)
+  * Social Planner Composer & Mobile Preview: [`screenshots/social_planner_composer.png`](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/screenshots/social_planner_composer.png)

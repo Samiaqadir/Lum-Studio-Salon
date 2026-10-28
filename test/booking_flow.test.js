@@ -266,7 +266,41 @@ test("QA Social Planner: Posts Endpoint & Status Pipeline (Draft / Scheduled)", 
   assert.ok(initialPosts.some(p => p.status === "Draft"), "Must contain Draft status post");
   assert.ok(initialPosts.some(p => p.status === "Scheduled"), "Must contain Scheduled status post");
 
-  // Create a new post via POST /api/admin/posts
+  // Create a new post via public POST /api/posts (DEF-006 verification)
+  const publicCreateRes = await fetch(`${baseUrl}/api/posts`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      platform: "pinterest",
+      caption: "Public wireframe draft creation test #Aesthetic",
+      plannedDate: "2026-11-20",
+      plannedTime: "10:00",
+      status: "Draft"
+    })
+  });
+  assert.equal(publicCreateRes.status, 201, "Public wireframe post creation should succeed with 201 Created");
+  const publicCreated = await publicCreateRes.json();
+  assert.equal(publicCreated.status, "Draft");
+  assert.equal(publicCreated.platform, "pinterest");
+
+  // Edit draft via public PATCH /api/posts/:id
+  const publicPatchRes = await fetch(`${baseUrl}/api/posts/${publicCreated.id}`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ plannedTime: "16:00", caption: "Edited draft caption for Brooklyn autumn hair" })
+  });
+  assert.equal(publicPatchRes.status, 200, "Public draft editing should succeed with 200 OK");
+  const publicEdited = await publicPatchRes.json();
+  assert.equal(publicEdited.plannedTime, "16:00");
+  assert.equal(publicEdited.caption, "Edited draft caption for Brooklyn autumn hair");
+
+  // Delete draft via public DELETE /api/posts/:id
+  const publicDelRes = await fetch(`${baseUrl}/api/posts/${publicCreated.id}`, {
+    method: "DELETE"
+  });
+  assert.equal(publicDelRes.status, 200, "Public draft deletion should return 200 OK");
+
+  // Create a post via admin POST /api/admin/posts
   const createRes = await fetch(`${baseUrl}/api/admin/posts`, {
     method: "POST",
     headers: { "content-type": "application/json", authorization: "Bearer admin123" },

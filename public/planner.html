@@ -611,8 +611,7 @@
         <span class="disclaimer-icon">⚠️</span>
         <div>
           <span class="disclaimer-badge">Wireframe Prototype</span>
-          <strong>Internal Social Content Planner &amp; Post Composer</strong> — For editorial schedule and caption layout only. 
-          <em>Do not imply real platform publishing.</em> No direct social network APIs are connected or executed.
+          <strong>Internal Social Content Planner &amp; Post Composer</strong> — For editorial schedule and caption layout only. Actual publishing requires approved API access, permissions, and scope. No direct social network APIs are connected or executed.
         </div>
       </div>
       <a class="button button-small button-outline" href="/admin">Staff Dashboard →</a>
@@ -874,6 +873,7 @@
             ⚠️ <em>Planning Wireframe only</em> · Stored locally in <code>data/store.json</code>.
           </div>
           <div class="composer-actions-right">
+            <button class="button button-outline" type="button" id="btn-delete-post" style="display:none;color:#b91c1c;border-color:#fca5a5;">Delete Draft</button>
             <button class="button button-outline" type="button" id="btn-cancel-composer">Cancel</button>
             <button class="button button-outline" type="button" id="btn-save-draft">Save as Draft</button>
             <button class="button button-dark" type="button" id="btn-schedule-post">Schedule Post</button>
@@ -1059,6 +1059,9 @@
           document.querySelector("#status-draft").checked = true;
         }
 
+        const deleteBtn = document.querySelector("#btn-delete-post");
+        if (deleteBtn) deleteBtn.style.display = post ? "inline-flex" : "none";
+
         updatePlatformToggles();
         updateLivePreview();
         composer.showModal();
@@ -1123,21 +1126,25 @@
           mediaUrl
         };
 
+        const adminAuth = sessionStorage.getItem("salonAdminKey");
+        const headers = { "content-type": "application/json" };
+        if (adminAuth) headers["authorization"] = `Bearer ${adminAuth}`;
+
         try {
           if (editingPostId) {
             // Edit existing
-            const res = await fetch(`/api/admin/posts/${editingPostId}`, {
+            const res = await fetch(`/api/posts/${editingPostId}`, {
               method: "PATCH",
-              headers: { "content-type": "application/json" },
+              headers,
               body: JSON.stringify(payload)
             });
             if (!res.ok) throw new Error("Could not update post.");
             showToast(`Post updated as ${targetStatus}!`);
           } else {
             // Create new
-            const res = await fetch("/api/admin/posts", {
+            const res = await fetch("/api/posts", {
               method: "POST",
-              headers: { "content-type": "application/json" },
+              headers,
               body: JSON.stringify(payload)
             });
             if (!res.ok) throw new Error("Could not save post.");
@@ -1151,10 +1158,32 @@
         }
       }
 
+      async function deletePost(postId) {
+        if (!confirm("Are you sure you want to remove this draft wireframe?")) return;
+        try {
+          const adminAuth = sessionStorage.getItem("salonAdminKey");
+          const headers = { "content-type": "application/json" };
+          if (adminAuth) headers["authorization"] = `Bearer ${adminAuth}`;
+          const res = await fetch(`/api/posts/${postId}`, {
+            method: "DELETE",
+            headers
+          });
+          if (!res.ok) throw new Error("Could not delete post.");
+          showToast("Draft wireframe removed.");
+          composer.close();
+          await fetchPosts();
+        } catch (err) {
+          showToast("Error removing post: " + err.message);
+        }
+      }
+
       document.querySelector("#btn-save-draft").addEventListener("click", () => savePost("Draft"));
       document.querySelector("#btn-schedule-post").addEventListener("click", () => savePost("Scheduled"));
       document.querySelector("#btn-cancel-composer").addEventListener("click", () => composer.close());
       document.querySelector("#btn-close-composer").addEventListener("click", () => composer.close());
+      document.querySelector("#btn-delete-post")?.addEventListener("click", () => {
+        if (editingPostId) deletePost(editingPostId);
+      });
 
       // Open composer button
       document.querySelector("#btn-open-composer").addEventListener("click", () => openComposer());

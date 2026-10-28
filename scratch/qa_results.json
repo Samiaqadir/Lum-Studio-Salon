@@ -1,6 +1,6 @@
 {
-  "total": 25,
-  "passed": 25,
+  "total": 29,
+  "passed": 29,
   "failed": 0,
   "suites": [
     {
@@ -124,6 +124,27 @@
         },
         {
           "name": "admin.html input fields have corresponding label elements with matching for/id",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "6. Social Planner Calendar Navigation & Post Composer",
+      "tests": [
+        {
+          "name": "GET /api/posts returns seed posts with Draft and Scheduled statuses",
+          "status": "PASS"
+        },
+        {
+          "name": "POST /api/posts creates new wireframe draft with planned date & time",
+          "status": "PASS"
+        },
+        {
+          "name": "PATCH and DELETE /api/posts/:id allow updating and deleting drafts",
+          "status": "PASS"
+        },
+        {
+          "name": "planner.html contains calendar month navigation, composer dialog, and publishing disclaimer",
           "status": "PASS"
         }
       ]

@@ -321,6 +321,73 @@ async function runQASuite() {
     assert.ok(html.includes("id=\"admin-key\""));
   });
 
+  // Suite 6: Social Planner Calendar Navigation & Post Composer
+  const s6 = addSuite("6. Social Planner Calendar Navigation & Post Composer");
+  s6.test("GET /api/posts returns seed posts with Draft and Scheduled statuses", async () => {
+    const res = await request("/api/posts");
+    assert.equal(res.status, 200);
+    assert.ok(Array.isArray(res.body) && res.body.length >= 4);
+    assert.ok(res.body.some((p) => p.status === "Draft"));
+    assert.ok(res.body.some((p) => p.status === "Scheduled"));
+  });
+
+  s6.test("POST /api/posts creates new wireframe draft with planned date & time", async () => {
+    const res = await request("/api/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        platform: "instagram",
+        caption: "Honey blonde lived-in balayage finish by Maya #BrooklynHair",
+        plannedDate: "2026-11-15",
+        plannedTime: "11:30",
+        status: "Draft"
+      })
+    });
+    assert.equal(res.status, 201);
+    assert.equal(res.body.status, "Draft");
+    assert.equal(res.body.plannedDate, "2026-11-15");
+    assert.equal(res.body.plannedTime, "11:30");
+  });
+
+  s6.test("PATCH and DELETE /api/posts/:id allow updating and deleting drafts", async () => {
+    const createRes = await request("/api/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        platform: "tiktok",
+        caption: "Styling curls with organic serum",
+        plannedDate: "2026-11-20",
+        plannedTime: "15:00",
+        status: "Draft"
+      })
+    });
+    assert.equal(createRes.status, 201);
+    const postId = createRes.body.id;
+
+    const patchRes = await request(`/api/posts/${postId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status: "Scheduled", plannedTime: "16:30" })
+    });
+    assert.equal(patchRes.status, 200);
+    assert.equal(patchRes.body.status, "Scheduled");
+    assert.equal(patchRes.body.plannedTime, "16:30");
+
+    const delRes = await request(`/api/posts/${postId}`, { method: "DELETE" });
+    assert.equal(delRes.status, 200);
+    assert.equal(delRes.body.success, true);
+  });
+
+  s6.test("planner.html contains calendar month navigation, composer dialog, and publishing disclaimer", () => {
+    const html = fs.readFileSync(path.join(__dirname, "../public/planner.html"), "utf8");
+    assert.ok(html.includes("id=\"btn-prev-month\""), "Must have previous month navigation button");
+    assert.ok(html.includes("id=\"btn-next-month\""), "Must have next month navigation button");
+    assert.ok(html.includes("id=\"btn-today-month\""), "Must have today month reset button");
+    assert.ok(html.includes("id=\"composer-modal\""), "Must have composer modal dialog");
+    assert.ok(html.includes("id=\"post-caption\""), "Must have post caption input");
+    assert.ok(html.includes("id=\"post-date\""), "Must have planned date picker");
+    assert.ok(html.includes("id=\"post-time\""), "Must have planned time picker");
+    assert.ok(html.includes("wireframe-disclaimer-banner"), "Must have wireframe disclaimer banner");
+    assert.ok(html.includes("Actual publishing requires approved API access"), "Must explain live API requirements");
+  });
+
   // Execute all suites
   for (const suite of results.suites) {
     console.log(`\n--- ${suite.name} ---`);
