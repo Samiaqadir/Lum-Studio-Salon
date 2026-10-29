@@ -42,11 +42,12 @@ node scratch/run_full_qa.js
 
 ## 📐 Project Structure & Documentation
 
-* **[API_CONTRACT.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/API_CONTRACT.md)**: Formal API & Mock Contract specification covering all endpoints (`/api/holds`, `/api/bookings`, `/api/posts`), error codes, payload schemas, input preservation guarantees, and the Mock Data Privacy & Security Policy.
-* **[DEFECT_LIST.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/DEFECT_LIST.md)**: Standardized Defect Triage Register classifying all defects (Critical, High, Medium, Low) with steps, expected/actual results, environment, evidence, and remediation logs (DEF-001 through DEF-007).
-* **[QA_CHECKLIST.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/QA_CHECKLIST.md)**: Comprehensive Quality Assurance Checklist with individual test IDs and expected results across 8 categories (Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, Broken Links, and Social Content Planner).
-* **[QA_TEST_SHEET.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/QA_TEST_SHEET.md)**: Scenario execution matrix documenting verified test runs, inputs, expected/actual outcomes, and defect traceability.
-* **[SCOPE.md](file:///c:/Users/samiaqadir/Desktop/SMJPROJECTS/SALON%20WEBSITE/SCOPE.md)**: Salon Scope & Social Planner Specifications.
+* **[LUMA_SALON_MVP_DEMO_QA_REPORT.md](./LUMA_SALON_MVP_DEMO_QA_REPORT.md)**: Executive MVP Demo & Comprehensive QA Report covering Tasks 1–4, real vs. mocked architecture, 39/39 regression tests, defect resolution log, Social Planner prototype, and risk analysis.
+* **[API_CONTRACT.md](./API_CONTRACT.md)**: Formal API & Mock Contract specification covering all endpoints (`/api/holds`, `/api/bookings`, `/api/posts`), error codes, payload schemas, input preservation guarantees, and the Mock Data Privacy & Security Policy.
+* **[DEFECT_LIST.md](./DEFECT_LIST.md)**: Standardized Defect Triage Register classifying all defects (Critical, High, Medium, Low) with steps, expected/actual results, environment, evidence, and remediation logs (DEF-001 through DEF-007).
+* **[QA_CHECKLIST.md](./QA_CHECKLIST.md)**: Comprehensive Quality Assurance Checklist with individual test IDs and expected results across 8 categories (Page Loading, Navigation, Required Fields, Mobile Layout, Keyboard Access, Error States, Broken Links, and Social Content Planner).
+* **[QA_TEST_SHEET.md](./QA_TEST_SHEET.md)**: Scenario execution matrix documenting verified test runs, inputs, expected/actual outcomes, and defect traceability.
+* **[SCOPE.md](./SCOPE.md)**: Salon Scope & Social Planner Specifications.
 * **`screenshots/`**: Visual evidence captured across standard desktop and mobile resolutions.
 
 ```text
