@@ -25,7 +25,9 @@ SALON_ADMIN_KEY="luma-secure-admin-pass" npm start
 
 Open your browser to:
 * **Salon Website:** [http://localhost:3000](http://localhost:3000)
+* **Browser QA Test Runner:** [http://localhost:3000/qa-runner.html](http://localhost:3000/qa-runner.html)
 * **Staff Portal:** [http://localhost:3000/admin](http://localhost:3000/admin) (Log in with the `SALON_ADMIN_KEY` defined above)
+* **Social Planner:** [http://localhost:3000/planner.html](http://localhost:3000/planner.html)
 
 Appointments and holds are persisted to `data/store.json`, automatically seeded on first launch.
 
@@ -42,6 +44,7 @@ node scratch/run_full_qa.js
 
 ## 📐 Project Structure & Documentation
 
+* **[TEST_PLAN.md](./TEST_PLAN.md)**: AI Website Testing Assistant Test Plan covering scope, user journeys, 10 repeatable test cases, browser test runner architecture, structured defect schema, and sample defect report.
 * **[LUMA_SALON_MVP_DEMO_QA_REPORT.md](./LUMA_SALON_MVP_DEMO_QA_REPORT.md)**: Executive MVP Demo & Comprehensive QA Report covering Tasks 1–4, real vs. mocked architecture, 39/39 regression tests, defect resolution log, Social Planner prototype, and risk analysis.
 * **[API_CONTRACT.md](./API_CONTRACT.md)**: Formal API & Mock Contract specification covering all endpoints (`/api/holds`, `/api/bookings`, `/api/posts`), error codes, payload schemas, input preservation guarantees, and the Mock Data Privacy & Security Policy.
 * **[DEFECT_LIST.md](./DEFECT_LIST.md)**: Standardized Defect Triage Register classifying all defects (Critical, High, Medium, Low) with steps, expected/actual results, environment, evidence, and remediation logs (DEF-001 through DEF-007).
