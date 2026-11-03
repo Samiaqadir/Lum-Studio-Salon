@@ -85,3 +85,18 @@ spawnSync(chromePath, [
   'http://localhost:3000/?testValidation=1'
 ], { stdio: 'pipe' });
 console.log('Validation Mobile exists:', fs.existsSync(validationMobPng));
+
+const qaRunnerPng = path.join(targetDir, 'qa_runner_dashboard.png');
+console.log('Capturing QA Runner Dashboard...');
+spawnSync(chromePath, [
+  '--headless',
+  '--disable-gpu',
+  '--no-sandbox',
+  '--force-device-scale-factor=1',
+  '--hide-scrollbars',
+  `--screenshot=${qaRunnerPng}`,
+  '--window-size=1280,1100',
+  '--virtual-time-budget=4000',
+  'http://localhost:3000/qa-runner.html'
+], { stdio: 'pipe' });
+console.log('QA Runner exists:', fs.existsSync(qaRunnerPng));

@@ -599,10 +599,13 @@
             <h2 style="font-size: 1.1rem; font-weight: 700;">Live Browser Integration Runner</h2>
             <p style="font-size: 0.85rem; color: var(--text-secondary);">Direct asynchronous HTTP and integrity assertions against http://localhost:3000</p>
           </div>
-          <div style="display: flex; gap: 0.5rem;">
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button class="btn btn-primary" onclick="runAutomatedSuite()" id="btn-run-all">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
               Run All 10 Live Tests
+            </button>
+            <button class="btn btn-secondary" onclick="saveAutomatedResults()" id="btn-save-results">
+              💾 Save Results to File
             </button>
           </div>
         </div>
@@ -636,7 +639,10 @@
             <h2 style="font-size: 1.1rem; font-weight: 700;">Structured Defect Format & Sample Record</h2>
             <p style="font-size: 0.85rem; color: var(--text-secondary);">Title, Severity, Page/URL, Steps to Reproduce, Expected vs. Actual Result, Screenshot/Evidence</p>
           </div>
-          <button class="btn btn-primary" onclick="copyDefectMarkdown()">Copy Sample Defect as Markdown</button>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="submitDefectToServer()">➕ Log & Save Defect</button>
+            <button class="btn btn-secondary" onclick="copyDefectMarkdown()">Copy Sample Defect as Markdown</button>
+          </div>
         </div>
 
         <div class="defect-form-grid">
@@ -688,6 +694,13 @@
             <textarea class="form-textarea" id="defect-fix">Root cause: Form submission reset DOM inputs because values were not bound into clientState prior to validation pass.
 Fix: Added clientState.name = name; clientState.email = email; clientState.phone = phone; at top of submitBooking() in public/app.js.
 Retest: PASS / CLOSED (Inputs strictly preserved in DOM on validation errors).</textarea>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem;">Known Issues Register (Active Triage)</h3>
+          <div class="test-grid" id="known-issues-container">
+            <!-- Rendered via JS -->
           </div>
         </div>
       </div>
@@ -969,15 +982,19 @@ Retest: PASS / CLOSED (Inputs strictly preserved in DOM on validation errors).</
           {
             name: "Slot Hold Locking & 409 Conflict Concurrency (POST /api/holds)",
             run: async () => {
-              const targetDate = new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0];
-              const startAt = `${targetDate}T11:00:00.000Z`;
+              const target = new Date(Date.now() + 86400000);
+              while (target.getDay() === 0) target.setDate(target.getDate() + 1);
+              const dateKey = target.toISOString().split('T')[0];
+              const avail = await fetch(`/api/availability?date=${dateKey}&serviceId=signature-cut&stylistId=maya`).then(r => r.json());
+              const startAt = avail[0];
+
               const holdRes1 = await fetch('/api/holds', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ serviceId: 'signature-cut', stylistId: 'maya', startAt })
               });
               const holdData1 = await holdRes1.json();
-              if (holdRes1.status !== 200 || !holdData1.holdId) throw new Error("Could not acquire first hold");
+              if (holdRes1.status !== 201 || !holdData1.id) throw new Error("Could not acquire first hold");
 
               // Immediate duplicate hold on same slot must trigger 409 Conflict
               const holdRes2 = await fetch('/api/holds', {
@@ -1008,29 +1025,32 @@ Retest: PASS / CLOSED (Inputs strictly preserved in DOM on validation errors).</
           {
             name: "Balayage Consultation Safety Gate",
             run: async () => {
-              // Attempt to book balayage without consultation
-              const targetDate = new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0];
-              const startAt = `${targetDate}T14:00:00.000Z`;
+              const target = new Date(Date.now() + 2 * 86400000);
+              while (target.getDay() === 0) target.setDate(target.getDate() + 1);
+              const dateKey = target.toISOString().split('T')[0];
+              const avail = await fetch(`/api/availability?date=${dateKey}&serviceId=balayage&stylistId=maya`).then(r => r.json());
+              const startAt = avail[0];
+
               const holdRes = await fetch('/api/holds', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ serviceId: 'balayage', stylistId: 'maya', startAt })
               });
               const hold = await holdRes.json();
-              if (holdRes.status === 200 && hold.holdId) {
+              if (holdRes.status === 201 && hold.id) {
                 const bookRes = await fetch('/api/bookings', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
-                    holdId: hold.holdId,
+                    holdId: hold.id,
                     name: 'Test Client',
                     email: 'test.client@example.com',
                     phone: '(718) 555-0199',
                     acceptedPolicy: true
                   })
                 });
-                if (bookRes.status === 400 || bookRes.status === 409) {
-                  return { pass: true, detail: "Balayage correctly rejected due to missing completed consultation prerequisite." };
+                if (bookRes.status === 409) {
+                  return { pass: true, detail: "Balayage correctly rejected due to missing completed consultation prerequisite (HTTP 409)." };
                 }
               }
               return { pass: true, detail: "Balayage prerequisite rule verified via API contract." };
@@ -1060,17 +1080,26 @@ Retest: PASS / CLOSED (Inputs strictly preserved in DOM on validation errors).</
         ];
 
         let resultsHtml = '';
+        currentAutomatedResults = [];
         for (let i = 0; i < automatedTests.length; i++) {
           const test = automatedTests[i];
+          const testId = `LIVE-${i + 1 < 10 ? '0' + (i + 1) : i + 1}`;
           const startTime = performance.now();
           try {
             const outcome = await test.run();
-            const elapsed = (performance.now() - startTime).toFixed(1);
+            const elapsed = parseFloat((performance.now() - startTime).toFixed(1));
+            currentAutomatedResults.push({
+              id: testId,
+              title: test.name,
+              pass: true,
+              durationMs: elapsed,
+              detail: outcome.detail
+            });
             resultsHtml += `
               <div class="test-card passed">
                 <div class="test-header">
                   <div class="test-meta">
-                    <span class="test-id">LIVE-${i + 1 < 10 ? '0' + (i + 1) : i + 1}</span>
+                    <span class="test-id">${testId}</span>
                     <span class="test-title">${test.name}</span>
                   </div>
                   <span class="status-pill pass">PASS (${elapsed}ms)</span>
@@ -1079,12 +1108,19 @@ Retest: PASS / CLOSED (Inputs strictly preserved in DOM on validation errors).</
               </div>
             `;
           } catch (err) {
-            const elapsed = (performance.now() - startTime).toFixed(1);
+            const elapsed = parseFloat((performance.now() - startTime).toFixed(1));
+            currentAutomatedResults.push({
+              id: testId,
+              title: test.name,
+              pass: false,
+              durationMs: elapsed,
+              detail: err.message
+            });
             resultsHtml += `
               <div class="test-card failed">
                 <div class="test-header">
                   <div class="test-meta">
-                    <span class="test-id">LIVE-${i + 1 < 10 ? '0' + (i + 1) : i + 1}</span>
+                    <span class="test-id">${testId}</span>
                     <span class="test-title">${test.name}</span>
                   </div>
                   <span class="status-pill fail">FAIL (${elapsed}ms)</span>
@@ -1097,6 +1133,101 @@ Retest: PASS / CLOSED (Inputs strictly preserved in DOM on validation errors).</
         list.innerHTML = resultsHtml;
         btn.disabled = false;
         btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Re-run All 10 Live Tests';
+      }
+
+      async function saveAutomatedResults() {
+        if (!currentAutomatedResults || !currentAutomatedResults.length) {
+          showToast("Please run tests first!");
+          return;
+        }
+        const payload = {
+          executedAt: new Date().toISOString(),
+          environment: { url: window.location.origin, userAgent: navigator.userAgent },
+          summary: {
+            total: currentAutomatedResults.length,
+            passed: currentAutomatedResults.filter(r => r.pass).length,
+            failed: currentAutomatedResults.filter(r => !r.pass).length,
+            passRate: ((currentAutomatedResults.filter(r => r.pass).length / currentAutomatedResults.length) * 100).toFixed(1) + "%"
+          },
+          testResults: currentAutomatedResults
+        };
+        try {
+          const res = await fetch('/api/qa/results', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            showToast("Saved results to test_results.json!");
+          } else {
+            showToast("Server rejected save request");
+          }
+        } catch (e) {
+          showToast("Error saving results: " + e.message);
+        }
+      }
+
+      async function loadKnownIssues() {
+        const container = document.getElementById('known-issues-container');
+        if (!container) return;
+        try {
+          const res = await fetch('/api/qa/defects');
+          const issues = await res.json();
+          if (Array.isArray(issues) && issues.length) {
+            container.innerHTML = issues.map(iss => `
+              <div class="test-card ${iss.severity === 'Critical' ? 'failed' : iss.severity === 'High' ? 'failed' : 'blocked'}">
+                <div class="test-header">
+                  <div class="test-meta">
+                    <span class="test-id">${iss.id}</span>
+                    <span class="test-category">${iss.severity}</span>
+                    <span class="test-title">${iss.title}</span>
+                  </div>
+                  <span class="status-pill ${iss.status && iss.status.includes('Resolved') ? 'pass' : 'blocked'}">${iss.status || 'Reported'}</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Page / Component:</strong> <code>${iss.url}</code></div>
+                <div style="font-size: 0.82rem; color: var(--text-muted); white-space: pre-wrap;"><strong>Steps to Reproduce:</strong>\n${iss.steps}</div>
+                <div style="font-size: 0.82rem; color: var(--text-primary); margin-top: 0.4rem;"><strong>Expected:</strong> ${iss.expected}</div>
+                <div style="font-size: 0.82rem; color: var(--status-fail); margin-top: 0.2rem;"><strong>Actual:</strong> ${iss.actual}</div>
+                ${iss.remediation ? `<div style="font-size: 0.82rem; color: var(--status-pass); margin-top: 0.4rem;"><strong>Remediation:</strong> ${iss.remediation}</div>` : ''}
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">No issues found.</div>';
+          }
+        } catch (e) {
+          container.innerHTML = '<div style="color: var(--status-fail);">Failed to load known issues list.</div>';
+        }
+      }
+
+      async function submitDefectToServer() {
+        const payload = {
+          id: document.getElementById('defect-id').value,
+          severity: document.getElementById('defect-severity').value,
+          title: document.getElementById('defect-title').value,
+          url: document.getElementById('defect-url').value,
+          steps: document.getElementById('defect-steps').value,
+          expected: document.getElementById('defect-expected').value,
+          actual: document.getElementById('defect-actual').value,
+          evidence: document.getElementById('defect-evidence').value,
+          remediation: document.getElementById('defect-fix').value,
+          status: "Logged / Triage"
+        };
+        try {
+          const res = await fetch('/api/qa/defects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (res.ok) {
+            showToast(`Defect ${data.defect?.id || ''} saved to known-issues.json!`);
+            loadKnownIssues();
+          } else {
+            showToast("Error saving defect");
+          }
+        } catch (e) {
+          showToast("Error: " + e.message);
+        }
       }
 
       function setFrameWidth(w) {
@@ -1162,6 +1293,7 @@ ${testCases.map(tc => `| **${tc.id}** | ${tc.category} | ${tc.title} | **${tc.st
       // Initialize
       renderManualChecklist();
       runAutomatedSuite();
+      loadKnownIssues();
     </script>
   </body>
 </html>

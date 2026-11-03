@@ -1,0 +1,62 @@
+[
+  {
+    "id": "DEF-001",
+    "title": "Client Name and Phone cleared from form inputs when validation fails on Email",
+    "severity": "High",
+    "url": "http://localhost:3000 (<dialog id='booking-dialog'> Step 2)",
+    "steps": "1. Open booking modal on http://localhost:3000\n2. Select 'Signature Cut' and pick slot\n3. Enter Name: 'Maya Lin', Phone: '(718) 555-0199', invalid Email: 'invalid-email'\n4. Accept cancellation policy\n5. Click 'Confirm my visit'",
+    "expected": "Form submission blocked; email highlighted in red; pre-filled Name and Phone strictly preserved.",
+    "actual": "Form validation triggered, but inputs were wiped, forcing user to re-type contact profile.",
+    "evidence": "screenshots/booking_validation_errors.png",
+    "status": "Resolved / Closed",
+    "remediation": "Updated submitBooking() in public/app.js to preserve clientState before running validation check."
+  },
+  {
+    "id": "DEF-002",
+    "title": "Unformatted Backend 500 Error Display and Lack of Recovery Guidance",
+    "severity": "High",
+    "url": "http://localhost:3000 (<dialog id='booking-dialog'> Step 2)",
+    "steps": "1. Fill booking form\n2. Simulate 500 server error via x-simulate-error: 500 header\n3. Observe modal error feedback",
+    "expected": "User sees styled failure alert card explaining issue, reassuring that chair hold is kept active, with 'Try again' button.",
+    "actual": "Plain unstyled red text rendered at bottom of modal without retry actionability.",
+    "evidence": "screenshots/booking_failure_error.png",
+    "status": "Resolved / Closed",
+    "remediation": "Implemented .booking-failure-card in public/styles.css with high-visibility icon, error explanation, and retry actionability."
+  },
+  {
+    "id": "DEF-003",
+    "title": "Double-Booking Risk from Rapid Multi-Clicks within 150ms",
+    "severity": "Critical",
+    "url": "http://localhost:3000 (<dialog id='booking-dialog'>)",
+    "steps": "1. Complete booking details\n2. Rapidly double or triple-click 'Confirm my visit' button (< 150ms gap)",
+    "expected": "Only first click dispatches HTTP request; subsequent clicks synchronously dropped.",
+    "actual": "Multiple parallel requests with same hold token triggered race condition and potential 409 error.",
+    "evidence": "test/booking_flow.test.js Subtest 6",
+    "status": "Resolved / Closed",
+    "remediation": "Introduced synchronous boolean lock isSubmittingBooking = true, disabled button with aria-busy='true' and .is-loading spinner."
+  },
+  {
+    "id": "DEF-004",
+    "title": "Missing Animated Loading Spinner During Booking Hold & Checkout",
+    "severity": "Medium",
+    "url": "http://localhost:3000 (Booking Modal)",
+    "steps": "1. Click 'Confirm my visit' on high-latency connection\n2. Observe submit button visual appearance",
+    "expected": "Button renders spinning indicator with accessible busy state (aria-busy='true').",
+    "actual": "Button only changed text to 'Saving your chair…' with no visual animated feedback.",
+    "evidence": "public/styles.css .button-spinner",
+    "status": "Resolved / Closed",
+    "remediation": "Added @keyframes button-spin and .button-spinner styles in public/styles.css."
+  },
+  {
+    "id": "DEF-005",
+    "title": "Multi-Instance Server Concurrency Requires Distributed Locks in Phase 2",
+    "severity": "Medium",
+    "url": "Architecture / Backend (data/store.json)",
+    "steps": "1. Deploy application across multiple load-balanced containers or horizontal instances\n2. Attempt simultaneous holds across separate instances",
+    "expected": "Holds synchronized across instances via distributed cache.",
+    "actual": "Single-node in-memory store and file locks do not coordinate across multiple disparate OS processes without Redis or Postgres.",
+    "evidence": "Documented in API_CONTRACT.md & SCOPE.md",
+    "status": "Known Issue / Phase 2 Planned",
+    "remediation": "Phase 2 architecture roadmap schedules migration to PostgreSQL row-level locks and Redis TTL keys."
+  }
+]

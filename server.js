@@ -585,6 +585,46 @@ function createSalonServer(options = {}) {
         });
       }
     }
+    if (url.pathname === "/api/qa/results") {
+      const resultsPath = path.join(__dirname, "test_results.json");
+      if (request.method === "GET") {
+        if (!fs.existsSync(resultsPath)) return sendJson(response, 200, { tests: [], summary: {} });
+        return sendJson(response, 200, JSON.parse(fs.readFileSync(resultsPath, "utf8")));
+      }
+      if (request.method === "POST") {
+        const body = await readBody(request);
+        fs.writeFileSync(resultsPath, JSON.stringify(body, null, 2), "utf8");
+        return sendJson(response, 200, { success: true, savedAt: new Date().toISOString() });
+      }
+    }
+    if (url.pathname === "/api/qa/defects") {
+      const defectsPath = path.join(__dirname, "known-issues.json");
+      if (request.method === "GET") {
+        if (!fs.existsSync(defectsPath)) return sendJson(response, 200, []);
+        return sendJson(response, 200, JSON.parse(fs.readFileSync(defectsPath, "utf8")));
+      }
+      if (request.method === "POST") {
+        const body = await readBody(request);
+        let list = [];
+        if (fs.existsSync(defectsPath)) {
+          try { list = JSON.parse(fs.readFileSync(defectsPath, "utf8")); } catch (e) {}
+        }
+        const newDefect = {
+          id: body.id || ('DEF-' + String(list.length + 1).padStart(3, "0")),
+          title: body.title || "Untitled Defect",
+          severity: body.severity || "Medium",
+          url: body.url || "http://localhost:3000",
+          steps: body.steps || "",
+          expected: body.expected || "",
+          actual: body.actual || "",
+          evidence: body.evidence || "",
+          createdAt: new Date().toISOString()
+        };
+        list.push(newDefect);
+        fs.writeFileSync(defectsPath, JSON.stringify(list, null, 2), "utf8");
+        return sendJson(response, 201, { success: true, defect: newDefect });
+      }
+    }
     return sendJson(response, 404, { error: "Not found." });
   }
 
