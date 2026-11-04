@@ -1,5 +1,5 @@
 {
-  "executedAt": "2026-11-03T06:07:50.350Z",
+  "executedAt": "2026-11-04T10:57:31.181Z",
   "environment": {
     "url": "http://127.0.0.1:3199",
     "nodeVersion": "v20.20.2",
@@ -18,7 +18,7 @@
       "category": "Navigation",
       "title": "Skip-to-Content Mechanism & Critical HTML Rendering",
       "status": "PASS",
-      "durationMs": 21,
+      "durationMs": 23,
       "actualResult": "HTTP 200 OK served. Skip link present: href=\"#main\". Viewport meta and UTF-8 charset validated. Security header nosniff enforced."
     },
     {
@@ -26,7 +26,7 @@
       "category": "Navigation",
       "title": "Internal Anchor Targets & Section DOM Resolution",
       "status": "PASS",
-      "durationMs": 4,
+      "durationMs": 3,
       "actualResult": "All 4 critical anchor targets (#services, #team, #studio, #visit) confirmed in DOM without broken internal links."
     },
     {
@@ -43,7 +43,7 @@
       "title": "Live Start-Time Slot Computation & Sunday Studio Closure Handling",
       "status": "PASS",
       "durationMs": 4,
-      "actualResult": "Weekday computed 13 available slots. Sunday closure correctly returned 0 slots without server error."
+      "actualResult": "Weekday computed 19 available slots. Sunday closure correctly returned 0 slots without server error."
     },
     {
       "id": "TC-05",
@@ -51,7 +51,7 @@
       "title": "5-Minute Slot Hold Locking & 409 Conflict Race Condition Protection",
       "status": "PASS",
       "durationMs": 11,
-      "actualResult": "Hold 1 granted with holdId: 74ee731b-832e-4194-9cb6-78cf6c6a4e4c (expiresAt: 2026-11-03T06:12:50.328Z). Competing hold rejected with HTTP 409: \"That time was just booked. Please choose another available time.\"."
+      "actualResult": "Hold 1 granted with holdId: 405eeda1-2fff-433f-b228-1edb40459cda (expiresAt: 2026-11-04T11:02:31.160Z). Competing hold rejected with HTTP 409: \"That time was just booked. Please choose another available time.\"."
     },
     {
       "id": "TC-06",
@@ -66,7 +66,7 @@
       "category": "Forms & Business Rules",
       "title": "Balayage Complimentary Consultation Prerequisite Verification",
       "status": "PASS",
-      "durationMs": 8,
+      "durationMs": 7,
       "actualResult": "HTTP 409 (CONSULTATION_REQUIRED) returned: \"Please book and complete a complimentary colour consultation before booking balayage.\". Studio safety rule successfully blocks unverified balayage."
     },
     {

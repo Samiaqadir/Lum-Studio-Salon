@@ -58,5 +58,18 @@
     "evidence": "Documented in API_CONTRACT.md & SCOPE.md",
     "status": "Known Issue / Phase 2 Planned",
     "remediation": "Phase 2 architecture roadmap schedules migration to PostgreSQL row-level locks and Redis TTL keys."
+  },
+  {
+    "id": "DEF-006",
+    "title": "Admin login empty key submission relies solely on browser HTML5 validation tooltip",
+    "severity": "Low",
+    "url": "http://localhost:3000/admin.html (Staff Sign In)",
+    "steps": "1. Navigate to http://localhost:3000/admin.html\n2. Leave 'SALON ADMIN KEY' input completely empty\n3. Click 'Sign in to schedule'\n4. Observe validation feedback behavior",
+    "expected": "Clear inline accessible alert banner with aria-live='polite' announces missing key to assistive technology in addition to HTML5 tooltip.",
+    "actual": "Displays native browser bubble 'Please fill out this field' with static helper text; screen readers may not announce dynamic focus without aria-invalid or aria-describedby.",
+    "evidence": "screenshots/admin_login_validation.png",
+    "status": "Active / Open",
+    "remediation": "Add aria-describedby linking error message container and inline red validation badge on submit."
   }
 ]
+

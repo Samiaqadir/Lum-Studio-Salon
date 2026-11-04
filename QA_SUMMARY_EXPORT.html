@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luma Hair Studio — Executive QA Test Summary & Quality Gate</title>
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-surface: #111827;
+      --bg-card: #1f293d;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --pass: #10b981;
+      --pass-bg: rgba(16, 185, 129, 0.15);
+      --fail: #ef4444;
+      --fail-bg: rgba(239, 68, 68, 0.15);
+      --blocked: #f59e0b;
+      --blocked-bg: rgba(245, 158, 11, 0.15);
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      padding: 3rem 1.5rem;
+      line-height: 1.6;
+    }
+    .container { max-width: 1140px; margin: 0 auto; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .badge-mvp {
+      display: inline-block;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+    h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: #fff; margin-bottom: 0.5rem; }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.75rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.75rem;
+    }
+    .meta-bar strong { color: var(--text-main); font-weight: 600; }
+    
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .metric-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+    .metric-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      line-height: 1.1;
+    }
+    .metric-value.total { color: var(--accent); }
+    .metric-value.pass { color: var(--pass); }
+    .metric-value.fail { color: var(--fail); }
+    .metric-value.not-run { color: #64748b; }
+    .metric-value.rate { color: #34d399; }
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+
+    section { margin-bottom: 3rem; }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    h2::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 1.2rem;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-surface);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th {
+      background: #1e293b;
+      color: #e2e8f0;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: #cbd5e1;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    .pill {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: ui-monospace, monospace;
+      text-transform: uppercase;
+    }
+    .pill.pass { background: var(--pass-bg); color: var(--pass); }
+    .pill.fail { background: var(--fail-bg); color: var(--fail); }
+    .pill.blocked { background: var(--blocked-bg); color: var(--blocked); }
+    .pill.crit { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
+    .pill.high { background: rgba(249, 115, 22, 0.2); color: #fb923c; border: 1px solid rgba(249,115,22,0.4); }
+    .pill.med { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245,158,11,0.4); }
+    .pill.low { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.4); }
+
+    /* Evidence Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .gallery-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .gallery-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #000;
+    }
+    .gallery-title { font-size: 0.88rem; font-weight: 700; color: #fff; }
+    .gallery-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Executive Callout */
+    .callout {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .callout-title { font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .callout-p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0.75rem; }
+    .callout-footer { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-mvp">Luma Hair Studio · MVP QA Acceptance</div>
+      <h1>One-Page QA Summary & Quality Gate Sign-Off</h1>
+      <div class="meta-bar">
+        <div>Target Application: <strong>http://localhost:3000</strong></div>
+        <div>Assigned Tester: <strong>Samia | AI Website Testing Assistant</strong></div>
+        <div>Execution Cycle: <strong>Regression & Hardening Pass 3</strong></div>
+        <div>Quality Gate Status: <strong style="color: var(--pass);">APPROVED FOR STAGING</strong></div>
+      </div>
+    </header>
+
+    <!-- Concise Dashboard -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Total Test Scope</div>
+        <div class="metric-value total">10</div>
+        <div class="metric-sub">Repeatable test scenarios</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Passed Verified</div>
+        <div class="metric-value pass">10</div>
+        <div class="metric-sub">Zero functional regressions</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Failed / Broken</div>
+        <div class="metric-value fail">0</div>
+        <div class="metric-sub">No blocking issues open</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Not Run / Pending</div>
+        <div class="metric-value not-run">0</div>
+        <div class="metric-sub">100% test execution coverage</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Execution Pass Rate</div>
+        <div class="metric-value rate">100%</div>
+        <div class="metric-sub">Automated & manual assertions</div>
+      </div>
+    </div>
+
+    <!-- Test Execution Matrix -->
+    <section>
+      <h2>Core QA Verification Matrix (10 Repeatable Scenarios)</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th style="width: 160px;">Category</th>
+              <th>Test Scenario & Expected Result</th>
+              <th style="width: 100px;">Status</th>
+              <th>Verification Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>TC-01</strong></td>
+              <td>Navigation</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Skip-to-Content Mechanism & Header Anchor Scrolling</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Skip link slides on Tab; anchor links (#services, #team, #studio, #visit) scroll smoothly.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>Verified Tab focus moves directly to #main; window scrollY shifts smoothly.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-02</strong></td>
+              <td>Navigation</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Mobile Hamburger Menu Drawer with Keyboard Trap & Escape Dismissal</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Drawer toggles aria-expanded; focus trapped inside; Escape dismisses drawer.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>Tested on 375px viewport; focus cycling wraps; Escape restores focus to trigger button.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-03</strong></td>
+              <td>Forms & Required Fields</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Service Selection Prerequisite for Slot Availability Calculation</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Clicking slot container without selecting service triggers helper text and red outline.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>0 network requests dispatched until valid service chosen; focuses #service-select.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-04</strong></td>
+              <td>Forms & Required Fields</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Client Contact Validation & Input Preservation (DEF-001 Fix Verification)</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Invalid email highlighted in red; pre-entered Name and Phone strictly preserved.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>DEF-001 fixed. clientState strictly retained in DOM on failed email validation.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-05</strong></td>
+              <td>Forms & Required Fields</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Balayage Consultation Prerequisite Rule & Mandatory Policy Checkbox</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Balayage booking rejected with HTTP 409 and warning modal if consultation unconfirmed.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>Prerequisite check and policy checkbox validation enforced on both client and backend.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-06</strong></td>
+              <td>Forms & Concurrency</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">5-Minute Exclusive Slot Hold Locking & Accidental Multi-Click Debounce</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">First session acquires slot hold; second gets 409 Conflict. Double-click dropped.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>Synchronous boolean guard drops clicks < 150ms; animated spinner displayed.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-07</strong></td>
+              <td>Links & Endpoints</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Internal Anchors, Contact Protocols (tel:, mailto:) & Secured Social Links</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">tel:+17185550142, mailto:hello@lumastudio.example; rel='noreferrer' on social links.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>Clean 404 handler on invalid routes; all contact protocols trigger native handlers.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-08</strong></td>
+              <td>Responsive Layout</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">375px Mobile Viewport Breakpoint & Floating Booking Bar</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Zero horizontal overflow (scrollWidth <= 375px); floating booking bar on scroll.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>scrollWidth strictly equals 375px; floating bar transitions smoothly with 10px safe margin.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-09</strong></td>
+              <td>Responsive Layout</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Minimum 44px x 44px Touch Targets for Mobile Accessibility</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Interactive elements meet WCAG 2.5.5 touch target minimum size.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>Time slot chips measured 48px height; buttons 46px height with adequate margins.</td>
+            </tr>
+            <tr>
+              <td><strong>TC-10</strong></td>
+              <td>Basic Accessibility</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">WCAG 2.1 AA Focus Rings, Modal Focus Trap & ARIA Landmark Structure</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">High-contrast focus ring visible; modal traps focus; Escape dismisses modal.</div>
+              </td>
+              <td><span class="pill pass">PASS</span></td>
+              <td>2px solid olive focus indicator; ARIA landmarks (header, nav, main, dialog) validated.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Known Issues Register -->
+    <section>
+      <h2>Defect & Known Issues Register (Triage History)</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th style="width: 100px;">Severity</th>
+              <th style="width: 180px;">Page / Component</th>
+              <th>Defect Title & Reproducible Steps</th>
+              <th style="width: 120px;">Status</th>
+              <th>Evidence & Remediation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>DEF-001</strong></td>
+              <td><span class="pill high">High</span></td>
+              <td>Booking Dialog Step 2</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Client Name and Phone cleared from form inputs when validation fails on Email</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Enter Name, Phone, and invalid email. Click confirm. Inputs were cleared.</div>
+              </td>
+              <td><span class="pill pass">Resolved / Closed</span></td>
+              <td>
+                <div>Evidence: <code>screenshots/booking_validation_errors.png</code></div>
+                <div style="color: var(--pass); font-size: 0.78rem; margin-top: 0.2rem;">Fix: Saved clientState before form validation check in submitBooking().</div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DEF-002</strong></td>
+              <td><span class="pill high">High</span></td>
+              <td>Booking Dialog Step 2</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Unformatted Backend 500 Error Display and Lack of Recovery Guidance</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Simulated 500 server error displayed plain unstyled red text without retry action.</div>
+              </td>
+              <td><span class="pill pass">Resolved / Closed</span></td>
+              <td>
+                <div>Evidence: <code>screenshots/booking_failure_error.png</code></div>
+                <div style="color: var(--pass); font-size: 0.78rem; margin-top: 0.2rem;">Fix: Designed .booking-failure-card with retry button and reassuring copy.</div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DEF-003</strong></td>
+              <td><span class="pill crit">Critical</span></td>
+              <td>Booking Modal Submit</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Double-Booking Risk from Rapid Multi-Clicks within 150ms</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Rapid double-clicking 'Confirm my visit' triggered competing parallel POST requests.</div>
+              </td>
+              <td><span class="pill pass">Resolved / Closed</span></td>
+              <td>
+                <div>Evidence: <code>test/booking_flow.test.js Subtest 6</code></div>
+                <div style="color: var(--pass); font-size: 0.78rem; margin-top: 0.2rem;">Fix: Introduced synchronous isSubmittingBooking flag and animated spinner.</div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DEF-004</strong></td>
+              <td><span class="pill med">Medium</span></td>
+              <td>Booking Modal Submit</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Missing Animated Loading Spinner During Booking Hold & Checkout</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Button text changed to static 'Saving your chair…' without animated progress ring.</div>
+              </td>
+              <td><span class="pill pass">Resolved / Closed</span></td>
+              <td>
+                <div>Evidence: <code>public/styles.css .button-spinner</code></div>
+                <div style="color: var(--pass); font-size: 0.78rem; margin-top: 0.2rem;">Fix: Added CSS @keyframes button-spin and aria-busy='true'.</div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DEF-005</strong></td>
+              <td><span class="pill med">Medium</span></td>
+              <td>Backend Architecture</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Multi-Instance Server Concurrency Requires Distributed Locks in Phase 2</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Single-node JSON file lock cannot coordinate across multi-container load balancers.</div>
+              </td>
+              <td><span class="pill blocked">Phase 2 Backlog</span></td>
+              <td>
+                <div>Evidence: <code>API_CONTRACT.md & SCOPE.md</code></div>
+                <div style="color: var(--accent); font-size: 0.78rem; margin-top: 0.2rem;">Roadmap: Scheduled migration to Postgres row locks & Redis TTL in Phase 2.</div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DEF-006</strong></td>
+              <td><span class="pill low">Low</span></td>
+              <td>admin.html (Staff Sign In)</td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">Admin login empty key submission relies solely on browser HTML5 validation tooltip</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">Empty input shows native tooltip; screen readers lack dynamic aria-live alert banner.</div>
+              </td>
+              <td><span class="pill blocked">Active / Open</span></td>
+              <td>
+                <div>Evidence: <code>screenshots/admin_login_validation.png</code></div>
+                <div style="color: var(--accent); font-size: 0.78rem; margin-top: 0.2rem;">Triage: Low priority; scheduled for accessibility enhancement sprint.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Visual Evidence Gallery -->
+    <section>
+      <h2>Visual Evidence Highlights</h2>
+      <div class="gallery-grid">
+        <div class="gallery-card">
+          <img src="screenshots/booking_validation_errors.png" alt="DEF-001 Form Validation">
+          <div class="gallery-title">DEF-001 Form Validation & Input Preservation</div>
+          <div class="gallery-desc">Demonstrates client contact data retention while highlighting invalid email format.</div>
+        </div>
+        <div class="gallery-card">
+          <img src="screenshots/booking_failure_error.png" alt="DEF-002 Graceful Error Card">
+          <div class="gallery-title">DEF-002 Graceful Failure Recovery Alert</div>
+          <div class="gallery-desc">High-contrast styled alert reassuring chair hold retention with an actionable retry button.</div>
+        </div>
+        <div class="gallery-card">
+          <img src="screenshots/booking_confirmation.png" alt="End-to-End Booking Confirmation">
+          <div class="gallery-title">End-to-End Booking Success Confirmation</div>
+          <div class="gallery-desc">Verified appointment receipt with confirmed date, time, stylist, and hold confirmation.</div>
+        </div>
+        <div class="gallery-card">
+          <img src="screenshots/admin_login_validation.png" alt="DEF-006 Admin Login Validation">
+          <div class="gallery-title">DEF-006 Admin Staff Sign In Validation</div>
+          <div class="gallery-desc">Native browser tooltip behavior for required Salon Admin Key input validation.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Executive Sign-Off -->
+    <div class="callout">
+      <div class="callout-title">Acceptance Sign-Off & Release Recommendation</div>
+      <div class="callout-p">
+        <strong>End-of-Day Acceptance Check Passed:</strong> A tester can independently load the QA Test Runner, execute automated assertions across the full booking journey, toggle manual test scenarios with instant scorecard recalculations, attach screenshot evidence to defects, filter issues by severity and status, and produce this comprehensive one-page QA summary export.
+      </div>
+      <div class="callout-footer">
+        Release Decision: FULL PASS (10/10) — Recommend advancing Luma Salon Studio MVP to Staging.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
