@@ -637,8 +637,16 @@ function createSalonServer(options = {}) {
       return sendJson(response, 400, { error: "Invalid path." });
     }
     const cleanPath = path.normalize(decodedPath).replace(/^[\\\/]+/, "");
-    const filePath = path.resolve(PUBLIC_DIR, cleanPath);
-    const relative = path.relative(PUBLIC_DIR, filePath);
+    let filePath = path.resolve(PUBLIC_DIR, cleanPath);
+    let checkDir = PUBLIC_DIR;
+    if (!fs.existsSync(filePath) && (cleanPath.startsWith('screenshots/') || cleanPath.startsWith('screenshots\\'))) {
+      const rootScreenshot = path.resolve(__dirname, cleanPath);
+      if (fs.existsSync(rootScreenshot) && fs.statSync(rootScreenshot).isFile()) {
+        filePath = rootScreenshot;
+        checkDir = __dirname;
+      }
+    }
+    const relative = path.relative(checkDir, filePath);
     if (relative.startsWith("..") || path.isAbsolute(relative)) {
       return sendJson(response, 403, { error: "Access denied." });
     }

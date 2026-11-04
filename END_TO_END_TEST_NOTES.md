@@ -120,3 +120,4 @@
 * `test_results.json` & `TEST_RESULTS.md` — Machine and human readable test outputs.
 * `screenshots/admin_login_validation.png` — Real screenshot evidence of staff login form validation.
 * `END_TO_END_TEST_NOTES.md` — This end-to-end user journey and triage log.
+

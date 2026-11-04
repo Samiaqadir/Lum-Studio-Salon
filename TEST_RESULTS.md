@@ -22,14 +22,14 @@
 
 | Test ID | Category | Scenario & Title | Status | Duration | Actual Result Captured |
 | :--- | :--- | :--- | :---: | :---: | :--- |
-| **TC-01** | Navigation | Skip-to-Content Mechanism & Critical HTML Rendering | **PASS** | 23ms | HTTP 200 OK served. Skip link present: href="#main". Viewport meta and UTF-8 charset validated. Security header nosniff enforced. |
+| **TC-01** | Navigation | Skip-to-Content Mechanism & Critical HTML Rendering | **PASS** | 25ms | HTTP 200 OK served. Skip link present: href="#main". Viewport meta and UTF-8 charset validated. Security header nosniff enforced. |
 | **TC-02** | Navigation | Internal Anchor Targets & Section DOM Resolution | **PASS** | 3ms | All 4 critical anchor targets (#services, #team, #studio, #visit) confirmed in DOM without broken internal links. |
 | **TC-03** | Forms & Required Fields | Service Catalogue Schema, Pricing, & Consultation Prerequisite Flag | **PASS** | 4ms | HTTP 200 returned 6 services with transparent pricing ($75-$310) and durations. Balayage requiresConsultation flag is true. |
 | **TC-04** | Forms & Availability | Live Start-Time Slot Computation & Sunday Studio Closure Handling | **PASS** | 4ms | Weekday computed 19 available slots. Sunday closure correctly returned 0 slots without server error. |
-| **TC-05** | Forms & Concurrency | 5-Minute Slot Hold Locking & 409 Conflict Race Condition Protection | **PASS** | 11ms | Hold 1 granted with holdId: 405eeda1-2fff-433f-b228-1edb40459cda (expiresAt: 2026-11-04T11:02:31.160Z). Competing hold rejected with HTTP 409: "That time was just booked. Please choose another available time.". |
-| **TC-06** | Forms & Required Fields | Client Contact Regex Validation & Mandatory Policy Acceptance Enforcement | **PASS** | 2ms | HTTP 409 returned. Server prevented invalid submission: "Your time hold expired. Please choose another slot.". Input preservation contract validated. |
+| **TC-05** | Forms & Concurrency | 5-Minute Slot Hold Locking & 409 Conflict Race Condition Protection | **PASS** | 9ms | Hold 1 granted with holdId: 8c3176fd-10fc-4442-85f1-e3a742c771f9 (expiresAt: 2026-11-04T11:12:12.249Z). Competing hold rejected with HTTP 409: "That time was just booked. Please choose another available time.". |
+| **TC-06** | Forms & Required Fields | Client Contact Regex Validation & Mandatory Policy Acceptance Enforcement | **PASS** | 3ms | HTTP 409 returned. Server prevented invalid submission: "Your time hold expired. Please choose another slot.". Input preservation contract validated. |
 | **TC-07** | Forms & Business Rules | Balayage Complimentary Consultation Prerequisite Verification | **PASS** | 7ms | HTTP 409 (CONSULTATION_REQUIRED) returned: "Please book and complete a complimentary colour consultation before booking balayage.". Studio safety rule successfully blocks unverified balayage. |
-| **TC-08** | Security & Authentication | Staff Dashboard Bearer Token Authentication & Multi-Key Verification | **PASS** | 4ms | Unauthenticated access rejected with HTTP 401. Authorized access verified for custom key and quick demo key (admin123). |
+| **TC-08** | Security & Authentication | Staff Dashboard Bearer Token Authentication & Multi-Key Verification | **PASS** | 3ms | Unauthenticated access rejected with HTTP 401. Authorized access verified for custom key and quick demo key (admin123). |
 
 ---
 

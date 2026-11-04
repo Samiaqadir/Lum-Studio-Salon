@@ -1652,7 +1652,19 @@ Retest: PASS (Simultaneous clicks dropped with 409 Conflict handled gracefully).
         URL.revokeObjectURL(url);
       }
 
-      function exportOnePageHtml() {
+      async function exportOnePageHtml() {
+        try {
+          const res = await fetch('/qa-summary-report.html');
+          if (res.ok) {
+            const htmlReport = await res.text();
+            downloadBlob(htmlReport, 'qa-summary-report.html', 'text/html');
+            showToast("One-Page HTML QA Summary downloaded!");
+            return;
+          }
+        } catch (e) {
+          // Fall back to dynamic client-side generation
+        }
+
         const total = testCases.length;
         const pass = testCases.filter(c => c.status === 'pass').length;
         const fail = testCases.filter(c => c.status === 'fail').length;

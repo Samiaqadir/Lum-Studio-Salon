@@ -1,5 +1,5 @@
 {
-  "executedAt": "2026-11-04T10:57:31.181Z",
+  "executedAt": "2026-11-04T11:07:12.268Z",
   "environment": {
     "url": "http://127.0.0.1:3199",
     "nodeVersion": "v20.20.2",
@@ -18,7 +18,7 @@
       "category": "Navigation",
       "title": "Skip-to-Content Mechanism & Critical HTML Rendering",
       "status": "PASS",
-      "durationMs": 23,
+      "durationMs": 25,
       "actualResult": "HTTP 200 OK served. Skip link present: href=\"#main\". Viewport meta and UTF-8 charset validated. Security header nosniff enforced."
     },
     {
@@ -50,15 +50,15 @@
       "category": "Forms & Concurrency",
       "title": "5-Minute Slot Hold Locking & 409 Conflict Race Condition Protection",
       "status": "PASS",
-      "durationMs": 11,
-      "actualResult": "Hold 1 granted with holdId: 405eeda1-2fff-433f-b228-1edb40459cda (expiresAt: 2026-11-04T11:02:31.160Z). Competing hold rejected with HTTP 409: \"That time was just booked. Please choose another available time.\"."
+      "durationMs": 9,
+      "actualResult": "Hold 1 granted with holdId: 8c3176fd-10fc-4442-85f1-e3a742c771f9 (expiresAt: 2026-11-04T11:12:12.249Z). Competing hold rejected with HTTP 409: \"That time was just booked. Please choose another available time.\"."
     },
     {
       "id": "TC-06",
       "category": "Forms & Required Fields",
       "title": "Client Contact Regex Validation & Mandatory Policy Acceptance Enforcement",
       "status": "PASS",
-      "durationMs": 2,
+      "durationMs": 3,
       "actualResult": "HTTP 409 returned. Server prevented invalid submission: \"Your time hold expired. Please choose another slot.\". Input preservation contract validated."
     },
     {
@@ -74,7 +74,7 @@
       "category": "Security & Authentication",
       "title": "Staff Dashboard Bearer Token Authentication & Multi-Key Verification",
       "status": "PASS",
-      "durationMs": 4,
+      "durationMs": 3,
       "actualResult": "Unauthenticated access rejected with HTTP 401. Authorized access verified for custom key and quick demo key (admin123)."
     }
   ]
